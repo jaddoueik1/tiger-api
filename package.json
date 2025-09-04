@@ -1,0 +1,31 @@
+{
+  "name": "tiger-api",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -e ts,js,json --exec tsx src/index.ts",
+    "seed": "tsx src/seeders/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.0",
+    "nodemon": "^3.1.10",
+    "swagger-ui-express": "^5.0.1",
+    "tsx": "^4.20.5",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.1"
+  }
+}
