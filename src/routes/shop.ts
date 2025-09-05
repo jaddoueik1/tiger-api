@@ -64,6 +64,21 @@ router.get('/products', async (req, res) => {
   }
 });
 
+// POST /api/shop/products
+router.post('/products', requireAdmin, async (req, res) => {
+  try {
+    const product = await ProductService.createProduct(req.body);
+    const response: ApiResponse<any> = { data: product };
+    res.status(201).json(response);
+  } catch (error) {
+    console.error('Error creating product:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to create product'
+    });
+  }
+});
+
 // GET /api/shop/products/:id
 router.get('/products/:id', async (req, res) => {
   const { id } = req.params;
@@ -88,6 +103,50 @@ router.get('/products/:id', async (req, res) => {
     res.status(500).json({
       error: 'Internal Server Error',
       message: 'Failed to fetch product'
+    });
+  }
+});
+
+// PUT /api/shop/products/:id
+router.put('/products/:id', requireAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await ProductService.updateProduct(id, req.body);
+    if (!product) {
+      return res.status(404).json({
+        error: 'Product Not Found',
+        message: `Product with id "${id}" not found`,
+      });
+    }
+    const response: ApiResponse<any> = { data: product };
+    res.json(response);
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to update product'
+    });
+  }
+});
+
+// DELETE /api/shop/products/:id
+router.delete('/products/:id', requireAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await ProductService.deleteProduct(id);
+    if (!product) {
+      return res.status(404).json({
+        error: 'Product Not Found',
+        message: `Product with id "${id}" not found`,
+      });
+    }
+    const response: ApiResponse<any> = { data: { success: true } };
+    res.json(response);
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to delete product'
     });
   }
 });
