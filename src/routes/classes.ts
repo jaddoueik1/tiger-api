@@ -25,24 +25,52 @@ router.get('/disciplines', async (req, res) => {
 // GET /api/classes/templates
 router.get('/templates', async (req, res) => {
   const { discipline, level, coachId } = req.query;
-  
+
   try {
     const templates = await ClassService.getClassTemplates({
       discipline: discipline as string,
       level: level as string,
       coachId: coachId as string
     });
-    
+
     const response: ApiResponse<any> = {
       data: templates,
     };
-    
+
     res.json(response);
   } catch (error) {
     console.error('Error fetching templates:', error);
     res.status(500).json({
       error: 'Internal Server Error',
       message: 'Failed to fetch templates'
+    });
+  }
+});
+
+// GET /api/classes/templates/:id
+router.get('/templates/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const template = await ClassService.getClassTemplateById(id);
+
+    if (!template) {
+      return res.status(404).json({
+        error: 'Class Template Not Found',
+        message: `Class template with id "${id}" not found`,
+      });
+    }
+
+    const response: ApiResponse<any> = {
+      data: template,
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Error fetching template:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to fetch template',
     });
   }
 });
