@@ -1,6 +1,7 @@
 import express from 'express';
 import { CoachService } from '../services/coachService';
 import { ApiResponse } from '../types';
+import { requireAdmin } from '../middleware/requireAdmin';
 
 const router = express.Router();
 
@@ -21,6 +22,21 @@ router.get('/', async (req, res) => {
     res.status(500).json({
       error: 'Internal Server Error',
       message: 'Failed to fetch coaches'
+    });
+  }
+});
+
+// POST /api/coaches
+router.post('/', requireAdmin, async (req, res) => {
+  try {
+    const coach = await CoachService.createCoach(req.body);
+    const response: ApiResponse<any> = { data: coach };
+    res.status(201).json(response);
+  } catch (error) {
+    console.error('Error creating coach:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to create coach'
     });
   }
 });
@@ -49,6 +65,50 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({
       error: 'Internal Server Error',
       message: 'Failed to fetch coach'
+    });
+  }
+});
+
+// PUT /api/coaches/:id
+router.put('/:id', requireAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const coach = await CoachService.updateCoach(id, req.body);
+    if (!coach) {
+      return res.status(404).json({
+        error: 'Coach Not Found',
+        message: `Coach with id "${id}" not found`,
+      });
+    }
+    const response: ApiResponse<any> = { data: coach };
+    res.json(response);
+  } catch (error) {
+    console.error('Error updating coach:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to update coach'
+    });
+  }
+});
+
+// DELETE /api/coaches/:id
+router.delete('/:id', requireAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const coach = await CoachService.deleteCoach(id);
+    if (!coach) {
+      return res.status(404).json({
+        error: 'Coach Not Found',
+        message: `Coach with id "${id}" not found`,
+      });
+    }
+    const response: ApiResponse<any> = { data: { success: true } };
+    res.json(response);
+  } catch (error) {
+    console.error('Error deleting coach:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to delete coach'
     });
   }
 });

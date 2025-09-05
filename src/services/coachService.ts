@@ -1,4 +1,4 @@
-import { Coach } from '../models';
+import { Coach, ICoach } from '../models';
 import { ApiResponse } from '../types';
 
 export class CoachService {
@@ -17,6 +17,18 @@ export class CoachService {
 
   static async getCoachById(id: string): Promise<Coach | null> {
     return Coach.findOne({ _id: id, isActive: true });
+  }
+
+  static async createCoach(data: ICoach): Promise<Coach> {
+    return Coach.create(data);
+  }
+
+  static async updateCoach(id: string, data: Partial<ICoach>): Promise<Coach | null> {
+    return Coach.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  static async deleteCoach(id: string): Promise<Coach | null> {
+    return Coach.findByIdAndUpdate(id, { isActive: false }, { new: true });
   }
 
   static async getCoachAvailability(

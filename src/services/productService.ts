@@ -1,4 +1,4 @@
-import { Product, ProductCategory } from '../models';
+import { Product, ProductCategory, IProduct } from '../models';
 
 export class ProductService {
   static async getAllCategories(): Promise<any[]> {
@@ -67,5 +67,17 @@ export class ProductService {
   static async getProductById(id: string): Promise<any | null> {
     return Product.findOne({ _id: id, isActive: true })
       .populate('categoryId', 'name slug');
+  }
+
+  static async createProduct(data: IProduct): Promise<any> {
+    return Product.create(data);
+  }
+
+  static async updateProduct(id: string, data: Partial<IProduct>): Promise<any | null> {
+    return Product.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  static async deleteProduct(id: string): Promise<any | null> {
+    return Product.findByIdAndUpdate(id, { isActive: false }, { new: true });
   }
 }
