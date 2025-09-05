@@ -37,7 +37,7 @@ const STATIC_DIR = path.resolve(__dirname, 'public');
 console.log('Serving static from:', STATIC_DIR);
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: '*',
   credentials: true,
 }));
 
