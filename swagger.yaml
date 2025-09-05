@@ -38,8 +38,101 @@ tags:
     description: External service webhooks
   - name: Health
     description: Service health checks
+  - name: Admin
+    description: Administrative endpoints
 
 paths:
+  /admin/content:
+    get:
+      tags: [Admin]
+      summary: List all content blocks
+      parameters:
+        - in: query
+          name: locale
+          schema:
+            type: string
+            default: en
+      responses:
+        '200':
+          description: List of content blocks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContentBlock'
+
+  /admin/disciplines:
+    get:
+      tags: [Admin]
+      summary: List all disciplines
+      responses:
+        '200':
+          description: List of disciplines
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClassDiscipline'
+
+  /admin/class-templates:
+    get:
+      tags: [Admin]
+      summary: List all class templates
+      responses:
+        '200':
+          description: List of class templates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClassTemplate'
+
+  /admin/class-sessions:
+    get:
+      tags: [Admin]
+      summary: List all class sessions
+      responses:
+        '200':
+          description: List of class sessions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClassSession'
+
+  /admin/product-categories:
+    get:
+      tags: [Admin]
+      summary: List product categories
+      responses:
+        '200':
+          description: List of product categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductCategory'
+
   /content/{key}:
     get:
       tags: [Content]
@@ -798,6 +891,40 @@ components:
         status:
           type: string
           enum: [scheduled, cancelled, full, in_progress, completed]
+
+    ContentBlock:
+      type: object
+      required: [id, key, locale, json]
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+        locale:
+          type: string
+        json:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProductCategory:
+      type: object
+      required: [id, name, slug]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        parentId:
+          type: string
 
     Coach:
       type: object
