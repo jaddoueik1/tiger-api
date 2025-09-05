@@ -12,6 +12,7 @@ import { bookingRoutes } from './routes/bookings';
 import { classRoutes } from './routes/classes';
 import { coachRoutes } from './routes/coaches';
 import { contentRoutes } from './routes/content';
+import { adminRoutes } from './routes/admin';
 import { membershipPlanRoutes } from './routes/membership-plans';
 import { privateSessionRoutes } from './routes/private-sessions';
 import { shopRoutes } from './routes/shop';
@@ -74,6 +75,7 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
+app.use('/api/admin', adminRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/classes', classRoutes);
 app.use('/api/coaches', coachRoutes);
