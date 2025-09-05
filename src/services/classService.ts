@@ -1,8 +1,12 @@
-import { ClassDiscipline, ClassTemplate, ClassSession, Coach } from '../models';
+import { ClassDiscipline, ClassTemplate, ClassSession, IClassDiscipline, IClassTemplate, IClassSession } from '../models';
 
 export class ClassService {
   static async getAllDisciplines(): Promise<any[]> {
     return ClassDiscipline.find({}).sort({ name: 1 });
+  }
+
+  static async createDiscipline(data: IClassDiscipline): Promise<any> {
+    return ClassDiscipline.create(data);
   }
 
   static async getClassTemplates(filters: {
@@ -37,6 +41,10 @@ export class ClassService {
     return ClassTemplate.findById(id)
       .populate('disciplineId', 'name slug')
       .populate('coachIds', 'name photo specialties');
+  }
+
+  static async createClassTemplate(data: IClassTemplate): Promise<any> {
+    return ClassTemplate.create(data);
   }
 
   static async getClassSessions(filters: {
@@ -93,5 +101,33 @@ export class ClassService {
     }
     
     return sessions;
+  }
+
+  static async createClassSession(data: IClassSession): Promise<any> {
+    return ClassSession.create(data);
+  }
+
+  static async updateDiscipline(id: string, data: Partial<IClassDiscipline>): Promise<any | null> {
+    return ClassDiscipline.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  static async deleteDiscipline(id: string): Promise<any | null> {
+    return ClassDiscipline.findByIdAndDelete(id);
+  }
+
+  static async updateClassTemplate(id: string, data: Partial<IClassTemplate>): Promise<any | null> {
+    return ClassTemplate.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  static async deleteClassTemplate(id: string): Promise<any | null> {
+    return ClassTemplate.findByIdAndDelete(id);
+  }
+
+  static async updateClassSession(id: string, data: Partial<IClassSession>): Promise<any | null> {
+    return ClassSession.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  static async deleteClassSession(id: string): Promise<any | null> {
+    return ClassSession.findByIdAndDelete(id);
   }
 }
