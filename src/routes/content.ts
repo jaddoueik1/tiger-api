@@ -1,6 +1,7 @@
 import express from 'express';
 import { ContentService } from '../services/contentService';
 import { ApiResponse } from '../types';
+import { requireAdmin } from '../middleware/requireAdmin';
 
 const router = express.Router();
 
@@ -29,6 +30,62 @@ router.get('/:key', async (req, res) => {
     res.status(500).json({
       error: 'Internal Server Error',
       message: 'Failed to fetch content'
+    });
+  }
+});
+
+// PUT /api/content/:key
+router.put('/:key', requireAdmin, async (req, res) => {
+  const { key } = req.params;
+  const { locale = 'en', json } = req.body;
+
+  if (!json) {
+    return res.status(400).json({
+      error: 'Bad Request',
+      message: 'Content JSON is required',
+    });
+  }
+
+  try {
+    const content = await ContentService.updateContent(key, locale, json);
+    const response: ApiResponse<any> = {
+      data: content,
+    };
+    res.json(response);
+  } catch (error) {
+    console.error('Error updating content:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to update content'
+    });
+  }
+});
+
+// DELETE /api/content/:key
+router.delete('/:key', requireAdmin, async (req, res) => {
+  const { key } = req.params;
+  const locale = (req.query.locale as string) || 'en';
+
+  try {
+    const content = await ContentService.deleteContent(key, locale);
+
+    if (!content) {
+      return res.status(404).json({
+        error: 'Content Not Found',
+        message: `Content block with key "${key}" and locale "${locale}" not found`,
+      });
+    }
+
+    const response: ApiResponse<any> = {
+      data: content,
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Error deleting content:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to delete content'
     });
   }
 });

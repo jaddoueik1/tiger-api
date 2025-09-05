@@ -156,6 +156,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
+    put:
+      tags: [Content]
+      summary: Update content block
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [locale, json]
+              properties:
+                locale:
+                  type: string
+                  default: en
+                json:
+                  type: object
+      responses:
+        '200':
+          description: Content block updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    delete:
+      tags: [Content]
+      summary: Delete content block
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: locale
+          schema:
+            type: string
+            default: en
+      responses:
+        '200':
+          description: Content block deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Content block not found
 
   /classes/disciplines:
     get:
