@@ -69,6 +69,68 @@ paths:
                     items:
                       $ref: '#/components/schemas/ClassDiscipline'
 
+  /classes/templates:
+    get:
+      tags: [Classes]
+      summary: List class templates with filters
+      parameters:
+        - in: query
+          name: discipline
+          schema:
+            type: string
+        - in: query
+          name: level
+          schema:
+            type: string
+        - in: query
+          name: coachId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of class templates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClassTemplate'
+
+  /classes/templates/{id}:
+    get:
+      tags: [Classes]
+      summary: Get class template by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Class template details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ClassTemplate'
+        '404':
+          description: Class template not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+
   /classes/sessions:
     get:
       tags: [Classes]
@@ -202,6 +264,38 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MediaItem'
+
+    ClassTemplate:
+      type: object
+      required: [id, disciplineId, title, level, durationMin, description]
+      properties:
+        id:
+          type: string
+        disciplineId:
+          type: string
+        title:
+          type: string
+        level:
+          type: string
+          enum: [beginner, intermediate, advanced, all_levels]
+        durationMin:
+          type: integer
+        description:
+          type: string
+        gearNeeded:
+          type: array
+          items:
+            type: string
+        coachIds:
+          type: array
+          items:
+            type: string
+        price:
+          type: number
+        prerequisites:
+          type: array
+          items:
+            type: string
 
     ClassSession:
       type: object

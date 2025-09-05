@@ -33,6 +33,12 @@ export class ClassService {
       .sort({ title: 1 });
   }
 
+  static async getClassTemplateById(id: string): Promise<any | null> {
+    return ClassTemplate.findById(id)
+      .populate('disciplineId', 'name slug')
+      .populate('coachIds', 'name photo specialties');
+  }
+
   static async getClassSessions(filters: {
     from?: Date;
     to?: Date;
