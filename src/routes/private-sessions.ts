@@ -2,6 +2,7 @@ import express from 'express';
 import { PrivateSession, PrivateSessionStatus } from '../types';
 import { coaches } from '../data/coaches';
 import { ApiResponse } from '../types';
+import { requireAdmin } from '../middleware/requireAdmin';
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ const router = express.Router();
 const privateSessions: PrivateSession[] = [];
 
 // POST /api/private-sessions
-router.post('/', (req, res) => {
+router.post('/', requireAdmin, (req, res) => {
   const { userId, coachId, startAt, endAt } = req.body;
   
   if (!userId || !coachId || !startAt || !endAt) {
@@ -54,7 +55,7 @@ router.post('/', (req, res) => {
 });
 
 // POST /api/private-sessions/:id/cancel
-router.post('/:id/cancel', (req, res) => {
+router.post('/:id/cancel', requireAdmin, (req, res) => {
   const { id } = req.params;
   
   const session = privateSessions.find(s => s.id === id);

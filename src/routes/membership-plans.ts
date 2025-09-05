@@ -1,6 +1,7 @@
 import express from 'express';
 import { MembershipPlanService } from '../services/membershipPlanService';
 import { ApiResponse } from '../types';
+import { requireAdmin } from '../middleware/requireAdmin';
 
 const router = express.Router();
 
@@ -50,7 +51,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/membership-plans
-router.post('/', async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const plan = await MembershipPlanService.createPlan(req.body);
 
@@ -69,7 +70,7 @@ router.post('/', async (req, res) => {
 });
 
 // PUT /api/membership-plans/:id
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -97,7 +98,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE /api/membership-plans/:id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {

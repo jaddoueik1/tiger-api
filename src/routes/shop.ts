@@ -1,6 +1,7 @@
 import express from 'express';
 import { ProductService } from '../services/productService';
 import { ApiResponse } from '../types';
+import { requireAdmin } from '../middleware/requireAdmin';
 
 const router = express.Router();
 
@@ -92,7 +93,7 @@ router.get('/products/:id', async (req, res) => {
 });
 
 // POST /api/shop/cart
-router.post('/cart', async (req, res) => {
+router.post('/cart', requireAdmin, async (req, res) => {
   const { userId, items } = req.body;
   
   if (!userId || !items || !Array.isArray(items)) {
