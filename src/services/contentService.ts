@@ -14,6 +14,10 @@ export class ContentService {
     );
   }
 
+  static async deleteContent(key: string, locale: string): Promise<any | null> {
+    return ContentBlock.findOneAndDelete({ key, locale });
+  }
+
   static async getAllContent(locale: string = 'en'): Promise<any[]> {
     return ContentBlock.find({ locale }).sort({ key: 1 });
   }
