@@ -4,6 +4,7 @@ import { templates } from '../data/templates';
 import { coaches } from '../data/coaches';
 import { disciplines } from '../data/disciplines';
 import { ApiResponse, Booking, BookingStatus, SessionStatus } from '../types';
+import { requireAdmin } from '../middleware/requireAdmin';
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ const router = express.Router();
 const bookings: Booking[] = [];
 
 // POST /api/bookings
-router.post('/', (req, res) => {
+router.post('/', requireAdmin, (req, res) => {
   const { userId, sessionId } = req.body;
   
   if (!userId || !sessionId) {
@@ -77,7 +78,7 @@ router.post('/', (req, res) => {
 });
 
 // DELETE /api/bookings/:id
-router.delete('/:id', (req, res) => {
+router.delete('/:id', requireAdmin, (req, res) => {
   const { id } = req.params;
   
   const bookingIndex = bookings.findIndex(b => b.id === id);
