@@ -2,6 +2,7 @@ import express from 'express';
 import { ProductService } from '../services/productService';
 import { ApiResponse } from '../types';
 import { requireAdmin } from '../middleware/requireAdmin';
+import { upload } from '../middleware/upload';
 
 const router = express.Router();
 
@@ -65,9 +66,18 @@ router.get('/products', async (req, res) => {
 });
 
 // POST /api/shop/products
-router.post('/products', requireAdmin, async (req, res) => {
+router.post('/products', requireAdmin, upload.array('images'), async (req, res) => {
   try {
-    const product = await ProductService.createProduct(req.body);
+    const data: any = { ...req.body };
+    ['variants', 'attributes'].forEach(field => {
+      if (typeof data[field] === 'string') {
+        try { data[field] = JSON.parse(data[field]); } catch { }
+      }
+    });
+    if (Array.isArray(req.files)) {
+      data.images = (req.files as Express.Multer.File[]).map(f => `/static/uploads/${f.filename}`);
+    }
+    const product = await ProductService.createProduct(data);
     const response: ApiResponse<any> = { data: product };
     res.status(201).json(response);
   } catch (error) {
@@ -108,10 +118,19 @@ router.get('/products/:id', async (req, res) => {
 });
 
 // PUT /api/shop/products/:id
-router.put('/products/:id', requireAdmin, async (req, res) => {
+router.put('/products/:id', requireAdmin, upload.array('images'), async (req, res) => {
   const { id } = req.params;
   try {
-    const product = await ProductService.updateProduct(id, req.body);
+    const data: any = { ...req.body };
+    ['variants', 'attributes'].forEach(field => {
+      if (typeof data[field] === 'string') {
+        try { data[field] = JSON.parse(data[field]); } catch { }
+      }
+    });
+    if (Array.isArray(req.files) && (req.files as Express.Multer.File[]).length > 0) {
+      data.images = (req.files as Express.Multer.File[]).map(f => `/static/uploads/${f.filename}`);
+    }
+    const product = await ProductService.updateProduct(id, data);
     if (!product) {
       return res.status(404).json({
         error: 'Product Not Found',
