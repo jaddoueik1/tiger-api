@@ -20,10 +20,10 @@ const privateSessionSchema = new Schema<IPrivateSession>({
     ref: 'User', 
     required: true 
   },
-  coachId: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'Coach', 
-    required: true 
+  coachId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
   startAt: { type: Date, required: true },
   endAt: { type: Date, required: true },

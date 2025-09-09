@@ -22,10 +22,10 @@ const classSessionSchema = new Schema<IClassSession>({
     ref: 'ClassTemplate', 
     required: true 
   },
-  coachId: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'Coach', 
-    required: true 
+  coachId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
   locationId: { type: String, required: true },
   room: { type: String, required: true, trim: true },

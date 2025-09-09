@@ -1,9 +1,9 @@
 import { Coach, ICoach } from '../models';
-import { ApiResponse } from '../types';
+import { ApiResponse, UserRole } from '../types';
 
 export class CoachService {
-  static async getAllCoaches(specialty?: string): Promise<Coach[]> {
-    const query: any = { isActive: true };
+  static async getAllCoaches(specialty?: string): Promise<ICoach[]> {
+    const query: any = { isActive: true, roles: UserRole.COACH };
     
     if (specialty) {
       query.specialties = { 
@@ -15,20 +15,22 @@ export class CoachService {
     return Coach.find(query).sort({ name: 1 });
   }
 
-  static async getCoachById(id: string): Promise<Coach | null> {
-    return Coach.findOne({ _id: id, isActive: true });
+  static async getCoachById(id: string): Promise<ICoach | null> {
+    return Coach.findOne({ _id: id, isActive: true, roles: UserRole.COACH });
   }
 
-  static async createCoach(data: ICoach): Promise<Coach> {
-    return Coach.create(data);
+  static async createCoach(data: ICoach): Promise<ICoach> {
+    const roles = data.roles || [];
+    if (!roles.includes(UserRole.COACH)) roles.push(UserRole.COACH);
+    return Coach.create({ ...data, roles });
   }
 
-  static async updateCoach(id: string, data: Partial<ICoach>): Promise<Coach | null> {
-    return Coach.findByIdAndUpdate(id, data, { new: true });
+  static async updateCoach(id: string, data: Partial<ICoach>): Promise<ICoach | null> {
+    return Coach.findOneAndUpdate({ _id: id, roles: UserRole.COACH }, data, { new: true });
   }
 
-  static async deleteCoach(id: string): Promise<Coach | null> {
-    return Coach.findByIdAndUpdate(id, { isActive: false }, { new: true });
+  static async deleteCoach(id: string): Promise<ICoach | null> {
+    return Coach.findOneAndUpdate({ _id: id, roles: UserRole.COACH }, { isActive: false }, { new: true });
   }
 
   static async getCoachAvailability(
@@ -36,7 +38,7 @@ export class CoachService {
     fromDate: Date, 
     toDate: Date
   ): Promise<any[]> {
-    const coach = await Coach.findById(coachId);
+    const coach = await Coach.findOne({ _id: coachId, roles: UserRole.COACH });
     if (!coach) {
       throw new Error('Coach not found');
     }

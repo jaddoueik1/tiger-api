@@ -1,6 +1,19 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { UserRole, MembershipStatus } from '../types';
 
+export interface ISocialLink {
+  platform: string;
+  url: string;
+}
+
+export interface IAvailabilityRule {
+  dayOfWeek: number; // 0-6
+  startTime: string; // HH:mm
+  endTime: string; // HH:mm
+  bufferMinutes: number;
+  leadTimeHours: number;
+}
+
 export interface IUser extends Document {
   email: string;
   name: string;
@@ -10,6 +23,14 @@ export interface IUser extends Document {
   memberships: IMembership[];
   credits: number;
   defaultPaymentMethod?: string;
+  bio?: string;
+  accolades?: string[];
+  socials?: ISocialLink[];
+  photo?: string;
+  specialties?: string[];
+  availabilityRules?: IAvailabilityRule[];
+  hourlyRate?: number;
+  isActive?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -36,6 +57,19 @@ const membershipSchema = new Schema<IMembership>({
   remainingClasses: { type: Number }
 });
 
+const socialLinkSchema = new Schema<ISocialLink>({
+  platform: { type: String, required: true },
+  url: { type: String, required: true }
+});
+
+const availabilityRuleSchema = new Schema<IAvailabilityRule>({
+  dayOfWeek: { type: Number, required: true, min: 0, max: 6 },
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true },
+  bufferMinutes: { type: Number, required: true, min: 0 },
+  leadTimeHours: { type: Number, required: true, min: 0 }
+});
+
 const userSchema = new Schema<IUser>({
   email: { 
     type: String, 
@@ -47,14 +81,22 @@ const userSchema = new Schema<IUser>({
   name: { type: String, required: true, trim: true },
   phone: { type: String, trim: true },
   passwordHash: { type: String, required: true },
-  roles: [{ 
-    type: String, 
+  roles: [{
+    type: String,
     enum: Object.values(UserRole),
     default: [UserRole.MEMBER]
   }],
   memberships: [membershipSchema],
   credits: { type: Number, default: 0, min: 0 },
-  defaultPaymentMethod: { type: String }
+  defaultPaymentMethod: { type: String },
+  bio: { type: String },
+  accolades: [{ type: String }],
+  socials: [socialLinkSchema],
+  photo: { type: String },
+  specialties: [{ type: String }],
+  availabilityRules: [availabilityRuleSchema],
+  hourlyRate: { type: Number, min: 0 },
+  isActive: { type: Boolean, default: true }
 }, {
   timestamps: true
 });
@@ -62,5 +104,6 @@ const userSchema = new Schema<IUser>({
 // Indexes
 userSchema.index({ email: 1 });
 userSchema.index({ roles: 1 });
+userSchema.index({ isActive: 1 });
 
 export const User = mongoose.model<IUser>('User', userSchema);

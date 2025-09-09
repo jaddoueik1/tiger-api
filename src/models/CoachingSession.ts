@@ -3,7 +3,6 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface ICoachingSession extends Document {
   name: string;
   coach?: mongoose.Types.ObjectId;
-  coachModel?: 'Coach' | 'User';
   date: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -11,14 +10,7 @@ export interface ICoachingSession extends Document {
 
 const coachingSessionSchema = new Schema<ICoachingSession>({
   name: { type: String, required: true, trim: true },
-  coach: { type: Schema.Types.ObjectId, refPath: 'coachModel' },
-  coachModel: {
-    type: String,
-    enum: ['Coach', 'User'],
-    required: function(this: ICoachingSession) {
-      return !!this.coach;
-    }
-  },
+  coach: { type: Schema.Types.ObjectId, ref: 'User' },
   date: { type: Date, required: true }
 }, {
   timestamps: true
