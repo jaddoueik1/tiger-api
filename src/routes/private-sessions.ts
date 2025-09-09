@@ -3,11 +3,9 @@ import { PrivateSession, PrivateSessionStatus } from '../types';
 import { coaches } from '../data/coaches';
 import { ApiResponse } from '../types';
 import { requireAdmin } from '../middleware/requireAdmin';
+import { privateSessions } from '../data/privateSessions';
 
 const router = express.Router();
-
-// Mock private sessions storage
-const privateSessions: PrivateSession[] = [];
 
 // POST /api/private-sessions
 router.post('/', requireAdmin, (req, res) => {

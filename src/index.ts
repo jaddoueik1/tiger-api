@@ -20,6 +20,7 @@ import { userRoutes } from './routes/user';
 import { webhookRoutes } from './routes/webhooks';
 import { coachingSessionRoutes } from './routes/coaching-sessions';
 import { paymentRoutes } from './routes/payment';
+import { coachEarningsRoutes } from './routes/coach-earnings';
 
 // ESM-safe __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -87,6 +88,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/membership-plans', membershipPlanRoutes);
 app.use('/api/coaching-sessions', coachingSessionRoutes);
 app.use('/api/private-sessions', privateSessionRoutes);
+app.use('/api/coach-earnings', coachEarningsRoutes);
 app.use('/api/me', userRoutes);
 app.use('/webhooks', webhookRoutes);
 app.use('/api', paymentRoutes);
