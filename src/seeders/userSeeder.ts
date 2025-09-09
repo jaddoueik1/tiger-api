@@ -27,14 +27,6 @@ export const seedUsers = async (): Promise<void> => {
         roles: [UserRole.MEMBER],
         memberships: [],
         credits: 10
-      },
-      {
-        email: 'coach@tigermuaythailb.com',
-        name: 'Coach Demo',
-        passwordHash: await bcrypt.hash('coach123', 10),
-        roles: [UserRole.COACH],
-        memberships: [],
-        credits: 0
       }
     ];
     

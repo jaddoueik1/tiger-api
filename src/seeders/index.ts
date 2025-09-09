@@ -15,12 +15,12 @@ export const runAllSeeders = async (): Promise<void> => {
     
     // Run seeders in dependency order
     await seedDisciplines();
+    await seedUsers();
     await seedCoaches();
     await seedTemplates(); // Depends on disciplines and coaches
     await seedProducts();
     await seedContent();
     await seedMembershipPlans();
-    await seedUsers();
     
     console.log('🎉 All seeders completed successfully!');
   } catch (error) {

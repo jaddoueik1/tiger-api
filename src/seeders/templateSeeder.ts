@@ -1,4 +1,5 @@
 import { ClassTemplate, ClassDiscipline, Coach } from '../models';
+import { UserRole } from '../types';
 import { templates } from '../data/templates';
 
 export const seedTemplates = async (): Promise<void> => {
@@ -10,7 +11,7 @@ export const seedTemplates = async (): Promise<void> => {
     
     // Get discipline and coach mappings
     const disciplines = await ClassDiscipline.find({});
-    const coaches = await Coach.find({});
+    const coaches = await Coach.find({ roles: UserRole.COACH });
     
     const disciplineMap = new Map(disciplines.map(d => [d.slug, d._id]));
     const coachMap = new Map(coaches.map(c => [c.name, c._id]));

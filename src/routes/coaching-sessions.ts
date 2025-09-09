@@ -8,24 +8,13 @@ const router = express.Router();
 const objectId = z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), { message: 'Invalid id' });
 
 // Schema used for both creation and updates
-const baseSchema = z.object({
+const createSchema = z.object({
   name: z.string().min(1),
   coach: objectId.optional(),
-  coachModel: z.enum(['Coach', 'User']).optional(),
   date: z.coerce.date()
 });
 
-// Helper to ensure coach and coachModel are provided together
-const together = (data: any) =>
-  (!data.coach && !data.coachModel) || (data.coach && data.coachModel);
-
-const createSchema = baseSchema.refine(together, {
-  message: 'coach and coachModel must be provided together'
-});
-
-const updateSchema = baseSchema.partial().refine(together, {
-  message: 'coach and coachModel must be provided together'
-});
+const updateSchema = createSchema.partial();
 
 const listSchema = z.object({
   coach: objectId.optional(),

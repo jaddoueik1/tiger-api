@@ -30,9 +30,9 @@ const classTemplateSchema = new Schema<IClassTemplate>({
   durationMin: { type: Number, required: true, min: 15 },
   description: { type: String, required: true },
   gearNeeded: [{ type: String, trim: true }],
-  coachIds: [{ 
-    type: Schema.Types.ObjectId, 
-    ref: 'Coach' 
+  coachIds: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }],
   price: { type: Number, min: 0 },
   prerequisites: [{ type: String, trim: true }]
