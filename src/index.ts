@@ -18,6 +18,8 @@ import { privateSessionRoutes } from './routes/private-sessions';
 import { shopRoutes } from './routes/shop';
 import { userRoutes } from './routes/user';
 import { webhookRoutes } from './routes/webhooks';
+import { coachingSessionRoutes } from './routes/coaching-sessions';
+import { paymentRoutes } from './routes/payment';
 
 // ESM-safe __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -83,9 +85,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/shop', shopRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/membership-plans', membershipPlanRoutes);
+app.use('/api/coaching-sessions', coachingSessionRoutes);
 app.use('/api/private-sessions', privateSessionRoutes);
 app.use('/api/me', userRoutes);
 app.use('/webhooks', webhookRoutes);
+app.use('/api', paymentRoutes);
 
 // 404 handler
 // app.use('*', (req, res) => {
