@@ -9,3 +9,5 @@ export { ContentBlock, type IContentBlock } from './ContentBlock';
 export { Booking, type IBooking } from './Booking';
 export { PrivateSession, type IPrivateSession } from './PrivateSession';
 export { MembershipPlan, type IMembershipPlan } from './MembershipPlan';
+export { CoachingSession, type ICoachingSession } from './CoachingSession';
+export { Payment, type IPayment } from './Payment';
