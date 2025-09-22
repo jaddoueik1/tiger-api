@@ -7,6 +7,7 @@ import { ContentService } from '../services/contentService';
 import { ProductService } from '../services/productService';
 import { ApiResponse } from '../types';
 import { DisciplineService } from '../services/disciplineService';
+import { registerAdminUploadImageRoute } from './admin/uploadImage';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,44 +21,7 @@ const router = express.Router();
 // Apply admin middleware to all routes
 router.use(requireAdmin);
 
-const ensureUploadDirectory = async () => {
-  await fs.mkdir(UPLOAD_DIR, { recursive: true });
-};
-
-const sanitizeFileName = (fileName: string) => {
-  const rawExtension = path.extname(fileName);
-  const baseName = path.basename(fileName, rawExtension);
-  const sanitizedBase = baseName.replace(/[^a-zA-Z0-9._-]/g, '_');
-  const sanitizedExtension = rawExtension
-    .toLowerCase()
-    .replace(/[^a-z0-9.]/g, '');
-
-  const finalBase = sanitizedBase || 'image';
-  const finalExtension = sanitizedExtension.startsWith('.')
-    ? sanitizedExtension
-    : sanitizedExtension
-    ? `.${sanitizedExtension}`
-    : '';
-
-  return `${finalBase}${finalExtension}`;
-};
-
-const getUniqueFileName = async (desiredName: string) => {
-  const extension = path.extname(desiredName).toLowerCase();
-  const base = path.basename(desiredName, extension);
-  let uniqueName = desiredName;
-  let counter = 1;
-
-  while (true) {
-    try {
-      await fs.access(path.join(UPLOAD_DIR, uniqueName));
-      uniqueName = `${base}-${counter}${extension}`;
-      counter += 1;
-    } catch {
-      return uniqueName;
-    }
-  }
-};
+registerAdminUploadImageRoute(router);
 
 // GET /api/admin/content
 router.get('/content', async (req, res) => {
