@@ -1,9 +1,9 @@
 import express from 'express';
 import { requireAdmin } from '../middleware/requireAdmin';
 import { ContentService } from '../services/contentService';
-import { ClassService } from '../services/classService';
 import { ProductService } from '../services/productService';
 import { ApiResponse } from '../types';
+import { DisciplineService } from '../services/disciplineService';
 
 const router = express.Router();
 
@@ -34,7 +34,7 @@ router.get('/content', async (req, res) => {
 // GET /api/admin/disciplines
 router.get('/disciplines', async (req, res) => {
   try {
-    const disciplines = await ClassService.getAllDisciplines();
+    const disciplines = await DisciplineService.getAllDisciplines();
 
     const response: ApiResponse<any> = {
       data: disciplines,
@@ -53,7 +53,7 @@ router.get('/disciplines', async (req, res) => {
 // GET /api/admin/class-templates
 router.get('/class-templates', async (req, res) => {
   try {
-    const templates = await ClassService.getClassTemplates({});
+    const templates = await DisciplineService.getClassTemplates();
 
     const response: ApiResponse<any> = {
       data: templates,
@@ -69,24 +69,6 @@ router.get('/class-templates', async (req, res) => {
   }
 });
 
-// GET /api/admin/class-sessions
-router.get('/class-sessions', async (req, res) => {
-  try {
-    const sessions = await ClassService.getClassSessions({});
-
-    const response: ApiResponse<any> = {
-      data: sessions,
-    };
-
-    res.json(response);
-  } catch (error) {
-    console.error('Error fetching class sessions:', error);
-    res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to fetch class sessions'
-    });
-  }
-});
 
 // GET /api/admin/product-categories
 router.get('/product-categories', async (req, res) => {
@@ -108,3 +90,4 @@ router.get('/product-categories', async (req, res) => {
 });
 
 export { router as adminRoutes };
+

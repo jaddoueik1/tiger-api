@@ -8,7 +8,6 @@ export interface IClassTemplate extends Document {
   durationMin: number;
   description: string;
   gearNeeded: string[];
-  coachIds: mongoose.Types.ObjectId[];
   price?: number;
   prerequisites?: string[];
   createdAt: Date;
@@ -29,11 +28,6 @@ const classTemplateSchema = new Schema<IClassTemplate>({
   },
   durationMin: { type: Number, required: true, min: 15 },
   description: { type: String, required: true },
-  gearNeeded: [{ type: String, trim: true }],
-  coachIds: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User'
-  }],
   price: { type: Number, min: 0 },
   prerequisites: [{ type: String, trim: true }]
 }, {
@@ -43,6 +37,5 @@ const classTemplateSchema = new Schema<IClassTemplate>({
 // Indexes
 classTemplateSchema.index({ disciplineId: 1 });
 classTemplateSchema.index({ level: 1 });
-classTemplateSchema.index({ coachIds: 1 });
 
 export const ClassTemplate = mongoose.model<IClassTemplate>('ClassTemplate', classTemplateSchema);

@@ -1,6 +1,5 @@
 import cors from 'cors';
 import express from 'express';
-import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
@@ -9,16 +8,12 @@ import YAML from 'yamljs';
 import { connectDatabase } from './config/database';
 import { adminRoutes } from './routes/admin';
 import { authRoutes } from './routes/auth';
-import { bookingRoutes } from './routes/bookings';
 import { classRoutes } from './routes/classes';
-import { coachEarningsRoutes } from './routes/coach-earnings';
 import { coachRoutes } from './routes/coaches';
-import { coachingSessionRoutes } from './routes/coaching-sessions';
 import { contentRoutes } from './routes/content';
 import { membershipPlanRoutes } from './routes/membership-plans';
 import { shopRoutes } from './routes/shop';
 import { userRoutes } from './routes/user';
-import { webhookRoutes } from './routes/webhooks';
 
 // ESM-safe __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -76,12 +71,8 @@ app.use('/api/classes', classRoutes);
 app.use('/api/coaches', coachRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/shop', shopRoutes);
-app.use('/api/bookings', bookingRoutes);
 app.use('/api/membership-plans', membershipPlanRoutes);
-app.use('/api/coaching-sessions', coachingSessionRoutes);
-app.use('/api/coach-earnings', coachEarningsRoutes);
 app.use('/api/me', userRoutes);
-app.use('/webhooks', webhookRoutes);
 
 // 404 handler
 // app.use('*', (req, res) => {

@@ -41,4 +41,16 @@ export class CoachService {
 
     return coach.bookedSessions ?? [];
   }
+
+  static async addBookedSession(coachId: string, session: IBookedSession): Promise<IBookedSession> {
+    const coach = await CoachService.getCoachById(coachId);
+    if (!coach) {
+        throw new Error('Coach not found');
+    }
+
+    coach.bookedSessions = coach.bookedSessions || [];
+    coach.bookedSessions.push(session);
+    await coach.save();
+    return session;
+  }
 }
