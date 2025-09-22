@@ -1436,6 +1436,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+    post:
+      tags: [Coaches]
+      summary: Add a booked session for a coach
+      operationId: addCoachBookedSession
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookedSession'
+      responses:
+        '201':
+          description: Booked session created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/BookedSession'
+        '404':
+          description: Coach not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Creation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
   /api/membership-plans:
     get:
       tags: [Membership]
