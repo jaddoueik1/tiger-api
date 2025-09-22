@@ -30,6 +30,7 @@ export interface IUser extends Document {
 export interface IBookedSession {
   templateId?: string;
   name?: string;
+  isPrivate?: boolean;
   sessionDate: Date;
   repetition: SessionRepetition;
 }
