@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import fs from 'fs';
 import helmet from 'helmet';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
@@ -30,6 +31,12 @@ app.use(helmet({
     crossOriginResourcePolicy: false,
 }));
 const STATIC_DIR = path.resolve(__dirname, 'public');
+const ASSETS_DIR = path.resolve(__dirname, '../assets');
+
+if (!fs.existsSync(ASSETS_DIR)) {
+  fs.mkdirSync(ASSETS_DIR, { recursive: true });
+}
+
 console.log('Serving static from:', STATIC_DIR);
 
 app.use(cors({
@@ -40,6 +47,14 @@ app.use(cors({
 app.use(
   '/static',
   express.static(STATIC_DIR, {
+    maxAge: '1d',
+    etag: true,
+  })
+);
+
+app.use(
+  '/assets',
+  express.static(ASSETS_DIR, {
     maxAge: '1d',
     etag: true,
   })
