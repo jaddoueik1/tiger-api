@@ -1,12 +1,16 @@
-import { AvailabilityRule, Coach } from '../types';
+import { Coach, SessionRepetition } from '../types';
 
-const defaultAvailability: AvailabilityRule[] = [
-  { dayOfWeek: 1, startTime: '06:00', endTime: '21:00', bufferMinutes: 30, leadTimeHours: 24 },
-  { dayOfWeek: 2, startTime: '06:00', endTime: '21:00', bufferMinutes: 30, leadTimeHours: 24 },
-  { dayOfWeek: 3, startTime: '06:00', endTime: '21:00', bufferMinutes: 30, leadTimeHours: 24 },
-  { dayOfWeek: 4, startTime: '06:00', endTime: '21:00', bufferMinutes: 30, leadTimeHours: 24 },
-  { dayOfWeek: 5, startTime: '06:00', endTime: '21:00', bufferMinutes: 30, leadTimeHours: 24 },
-  { dayOfWeek: 6, startTime: '08:00', endTime: '18:00', bufferMinutes: 30, leadTimeHours: 24 },
+const defaultBookedSessions: Coach['bookedSessions'] = [
+  {
+    templateId: 'tmpl-bjj-101',
+    sessionDate: new Date('2024-08-05T10:00:00.000Z'),
+    repetition: SessionRepetition.WEEKLY,
+  },
+  {
+    name: 'Competition Prep: No-Gi Drilling',
+    sessionDate: new Date('2024-08-07T18:00:00.000Z'),
+    repetition: SessionRepetition.DAILY,
+  },
 ];
 
 export const coaches: Coach[] = [
@@ -24,7 +28,7 @@ export const coaches: Coach[] = [
     ],
     photo: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg',
     specialties: ['Brazilian Jiu-Jitsu', 'No-Gi Grappling', 'Competition Training'],
-    availabilityRules: defaultAvailability,
+    bookedSessions: defaultBookedSessions,
     hourlyRate: 120,
     isActive: true,
   },
@@ -42,7 +46,18 @@ export const coaches: Coach[] = [
     ],
     photo: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg',
     specialties: ['Muay Thai', 'Traditional Thai Boxing', 'Clinch Work'],
-    availabilityRules: defaultAvailability,
+    bookedSessions: [
+      {
+        templateId: 'tmpl-muaythai-advanced',
+        sessionDate: new Date('2024-08-06T16:00:00.000Z'),
+        repetition: SessionRepetition.WEEKLY,
+      },
+      {
+        name: 'Private Elbow Workshop',
+        sessionDate: new Date('2024-08-09T14:00:00.000Z'),
+        repetition: SessionRepetition.MONTHLY,
+      },
+    ],
     hourlyRate: 100,
     isActive: true,
   },
@@ -60,7 +75,18 @@ export const coaches: Coach[] = [
     ],
     photo: 'https://images.pexels.com/photos/1153867/pexels-photo-1153867.jpeg',
     specialties: ['Boxing', 'Footwork', 'Ring Strategy'],
-    availabilityRules: defaultAvailability,
+    bookedSessions: [
+      {
+        templateId: 'tmpl-boxing-201',
+        sessionDate: new Date('2024-08-08T12:00:00.000Z'),
+        repetition: SessionRepetition.WEEKLY,
+      },
+      {
+        name: 'Youth Sparring Camp',
+        sessionDate: new Date('2024-08-15T20:00:00.000Z'),
+        repetition: SessionRepetition.MONTHLY,
+      },
+    ],
     hourlyRate: 90,
     isActive: true,
   },
@@ -78,7 +104,18 @@ export const coaches: Coach[] = [
     ],
     photo: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg',
     specialties: ['MMA', 'Women\'s Self-Defense', 'Cage Work'],
-    availabilityRules: defaultAvailability,
+    bookedSessions: [
+      {
+        templateId: 'tmpl-mma-conditioning',
+        sessionDate: new Date('2024-08-10T09:00:00.000Z'),
+        repetition: SessionRepetition.WEEKLY,
+      },
+      {
+        name: 'Octagon Strategy Breakdown',
+        sessionDate: new Date('2024-08-18T17:00:00.000Z'),
+        repetition: SessionRepetition.MONTHLY,
+      },
+    ],
     hourlyRate: 140,
     isActive: true,
   },
@@ -96,7 +133,18 @@ export const coaches: Coach[] = [
     ],
     photo: 'https://images.pexels.com/photos/1581384/pexels-photo-1581384.jpeg',
     specialties: ['Wrestling', 'Takedowns', 'Ground Control'],
-    availabilityRules: defaultAvailability,
+    bookedSessions: [
+      {
+        templateId: 'tmpl-wrestling-takedowns',
+        sessionDate: new Date('2024-08-03T11:00:00.000Z'),
+        repetition: SessionRepetition.WEEKLY,
+      },
+      {
+        name: 'Chain Wrestling Intensive',
+        sessionDate: new Date('2024-08-20T19:00:00.000Z'),
+        repetition: SessionRepetition.MONTHLY,
+      },
+    ],
     hourlyRate: 110,
     isActive: true,
   }

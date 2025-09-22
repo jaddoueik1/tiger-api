@@ -2,7 +2,7 @@
 export { ClassDiscipline, type IClassDiscipline, type IMediaItem } from './ClassDiscipline';
 export { ClassSession, type IClassSession } from './ClassSession';
 export { ClassTemplate, type IClassTemplate } from './ClassTemplate';
-export { Coach, type IAvailabilityRule, type ICoach, type ISocialLink } from './Coach';
+export { Coach, type IBookedSession, type ICoach, type ISocialLink } from './Coach';
 export { CoachingSession, type ICoachingSession } from './CoachingSession';
 export { ContentBlock, type IContentBlock } from './ContentBlock';
 export { MembershipPlan, type IMembershipPlan } from './MembershipPlan';

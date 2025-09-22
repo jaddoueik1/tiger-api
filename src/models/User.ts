@@ -1,17 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { UserRole, MembershipStatus } from '../types';
+import { UserRole, MembershipStatus, SessionRepetition } from '../types';
 
 export interface ISocialLink {
   platform: string;
   url: string;
-}
-
-export interface IAvailabilityRule {
-  dayOfWeek: number; // 0-6
-  startTime: string; // HH:mm
-  endTime: string; // HH:mm
-  bufferMinutes: number;
-  leadTimeHours: number;
 }
 
 export interface IUser extends Document {
@@ -28,11 +20,18 @@ export interface IUser extends Document {
   socials?: ISocialLink[];
   photo?: string;
   specialties?: string[];
-  availabilityRules?: IAvailabilityRule[];
+  bookedSessions?: IBookedSession[];
   hourlyRate?: number;
   isActive?: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface IBookedSession {
+  templateId?: string;
+  name?: string;
+  sessionDate: Date;
+  repetition: SessionRepetition;
 }
 
 export interface IMembership {
@@ -62,12 +61,28 @@ const socialLinkSchema = new Schema<ISocialLink>({
   url: { type: String, required: true }
 });
 
-const availabilityRuleSchema = new Schema<IAvailabilityRule>({
-  dayOfWeek: { type: Number, required: true, min: 0, max: 6 },
-  startTime: { type: String, required: true },
-  endTime: { type: String, required: true },
-  bufferMinutes: { type: Number, required: true, min: 0 },
-  leadTimeHours: { type: Number, required: true, min: 0 }
+const bookedSessionSchema = new Schema<IBookedSession>({
+  templateId: { type: String, trim: true },
+  name: { type: String, trim: true },
+  sessionDate: { type: Date, required: true },
+  repetition: {
+    type: String,
+    required: true,
+    enum: Object.values(SessionRepetition),
+  },
+}, {
+  _id: false,
+});
+
+bookedSessionSchema.pre('validate', function (next) {
+  const session = this as unknown as mongoose.Document<IBookedSession> & IBookedSession;
+
+  if (!session.templateId && !session.name) {
+    session.invalidate('templateId', 'Either templateId or name must be provided');
+    session.invalidate('name', 'Either templateId or name must be provided');
+  }
+
+  next();
 });
 
 const userSchema = new Schema<IUser>({
@@ -94,7 +109,10 @@ const userSchema = new Schema<IUser>({
   socials: [socialLinkSchema],
   photo: { type: String },
   specialties: [{ type: String }],
-  availabilityRules: [availabilityRuleSchema],
+  bookedSessions: {
+    type: [bookedSessionSchema],
+    default: [],
+  },
   hourlyRate: { type: Number, min: 0 },
   isActive: { type: Boolean, default: true }
 }, {

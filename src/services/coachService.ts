@@ -1,11 +1,14 @@
 import bcrypt from 'bcryptjs';
-import { Coach, ICoach, User } from '../models';
+import { IBookedSession, ICoach, User } from '../models';
 import { UserRole } from '../types';
 
 export class CoachService {
   static async getAllCoaches(specialty?: string): Promise<ICoach[]> {
-    const query: any = {roles: UserRole.COACH };
-    console.log(await User.find(query));
+    const query: any = { roles: UserRole.COACH };
+
+    if (specialty) {
+      query.specialties = specialty;
+    }
     return User.find(query).sort({ name: 1 });
   }
 
@@ -29,49 +32,13 @@ export class CoachService {
     return User.findOneAndUpdate({ _id: id, roles: UserRole.COACH }, { isActive: false }, { new: true });
   }
 
-  static async getCoachAvailability(
-    coachId: string, 
-    fromDate: Date, 
-    toDate: Date
-  ): Promise<any[]> {
-    const coach = await Coach.findOne({ _id: coachId, roles: UserRole.COACH });
+  static async getCoachBookedSessions(id: string): Promise<IBookedSession[]> {
+    const coach = await CoachService.getCoachById(id);
+
     if (!coach) {
       throw new Error('Coach not found');
     }
 
-    // Generate availability slots based on rules
-    const availableSlots = [];
-    const current = new Date(fromDate);
-    
-    while (current <= toDate) {
-      const dayOfWeek = current.getDay();
-      const rule = coach?.availabilityRules?.find(r => r.dayOfWeek === dayOfWeek);
-      
-      if (rule) {
-        const [startHour, startMin] = rule.startTime.split(':').map(Number);
-        const [endHour, endMin] = rule.endTime.split(':').map(Number);
-        
-        for (let hour = startHour; hour < endHour; hour++) {
-          const slotStart = new Date(current);
-          slotStart.setHours(hour, 0, 0, 0);
-          
-          const slotEnd = new Date(slotStart);
-          slotEnd.setHours(hour + 1, 0, 0, 0);
-          
-          // Skip if in the past
-          if (slotStart <= new Date()) continue;
-          
-          availableSlots.push({
-            startAt: slotStart,
-            endAt: slotEnd,
-            price: coach.hourlyRate || 100,
-          });
-        }
-      }
-      
-      current.setDate(current.getDate() + 1);
-    }
-    
-    return availableSlots;
+    return coach.bookedSessions ?? [];
   }
 }

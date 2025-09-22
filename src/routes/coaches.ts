@@ -1,6 +1,7 @@
 import express from 'express';
 import { CoachService } from '../services/coachService';
 import { ApiResponse } from '../types';
+import { IBookedSession } from '../models';
 import { requireAdmin } from '../middleware/requireAdmin';
 
 const router = express.Router();
@@ -113,24 +114,20 @@ router.delete('/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// GET /api/coaches/:id/availability
-router.get('/:id/availability', async (req, res) => {
+// GET /api/coaches/:id/booked-sessions
+router.get('/:id/booked-sessions', async (req, res) => {
   const { id } = req.params;
-  const { from, to } = req.query;
-  
+
   try {
-    const fromDate = new Date(from as string || new Date());
-    const toDate = new Date(to as string || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
-    
-    const availableSlots = await CoachService.getCoachAvailability(id, fromDate, toDate);
-    
-    const response: ApiResponse<any> = {
-      data: availableSlots,
+    const bookedSessions = await CoachService.getCoachBookedSessions(id);
+
+    const response: ApiResponse<IBookedSession[]> = {
+      data: bookedSessions,
     };
-    
+
     res.json(response);
   } catch (error) {
-    console.error('Error fetching coach availability:', error);
+    console.error('Error fetching coach booked sessions:', error);
     if (error instanceof Error && error.message === 'Coach not found') {
       return res.status(404).json({
         error: 'Coach Not Found',
@@ -139,7 +136,7 @@ router.get('/:id/availability', async (req, res) => {
     }
     res.status(500).json({
       error: 'Internal Server Error',
-      message: 'Failed to fetch coach availability'
+      message: 'Failed to fetch coach booked sessions'
     });
   }
 });
