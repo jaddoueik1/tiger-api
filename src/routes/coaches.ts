@@ -141,4 +141,26 @@ router.get('/:id/booked-sessions', async (req, res) => {
   }
 });
 
+router.post("/:id/booked-sessions", async (req, res) => {
+    const { id } = req.params;
+    const sessionData: IBookedSession = req.body;
+    try {
+        const session = await CoachService.addBookedSession(id, sessionData);
+        const response: ApiResponse<IBookedSession> = { data: session };
+        res.status(201).json(response);
+    } catch (error) {
+        console.error('Error adding booked session:', error);
+        if (error instanceof Error && error.message === 'Coach not found') {
+            return res.status(404).json({
+                error: 'Coach Not Found',
+                message: `Coach with id "${id}" not found`,
+            });
+        }
+        res.status(500).json({
+            error: 'Internal Server Error',
+            message: 'Failed to add booked session'
+        });
+    }
+});
+
 export { router as coachRoutes };
