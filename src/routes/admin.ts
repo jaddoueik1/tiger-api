@@ -139,7 +139,15 @@ router.get('/product-categories', async (req, res) => {
 });
 
 router.post('/upload-image', async (req, res) => {
-  const { fileName, imageData } = req.body as { fileName?: string; imageData?: string };
+  const body = req.body as { fileName?: string; imageData?: string } | undefined;
+  const { fileName, imageData } = body ?? {};
+
+  if (!body || typeof body !== 'object') {
+    return res.status(400).json({
+      error: 'Bad Request',
+      message: 'Invalid request payload',
+    });
+  }
 
   if (!fileName || !imageData) {
     return res.status(400).json({
