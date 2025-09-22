@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 import { User, type IUser, type ISocialLink, type IAvailabilityRule } from './User';
 
-export interface ICoach extends IUser {}
+export interface ICoach extends IUser {
+    password: string; // Plain text password for creation only
+}
 
 export const Coach = User as mongoose.Model<ICoach>;
 

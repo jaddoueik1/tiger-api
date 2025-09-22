@@ -1,36 +1,32 @@
-import { Coach, ICoach } from '../models';
-import { ApiResponse, UserRole } from '../types';
+import bcrypt from 'bcryptjs';
+import { Coach, ICoach, User } from '../models';
+import { UserRole } from '../types';
 
 export class CoachService {
   static async getAllCoaches(specialty?: string): Promise<ICoach[]> {
-    const query: any = { isActive: true, roles: UserRole.COACH };
-    
-    if (specialty) {
-      query.specialties = { 
-        $regex: specialty, 
-        $options: 'i' 
-      };
-    }
-    
-    return Coach.find(query).sort({ name: 1 });
+    const query: any = {roles: UserRole.COACH };
+    console.log(await User.find(query));
+    return User.find(query).sort({ name: 1 });
   }
 
   static async getCoachById(id: string): Promise<ICoach | null> {
-    return Coach.findOne({ _id: id, isActive: true, roles: UserRole.COACH });
+    return User.findOne({ _id: id, roles: UserRole.COACH });
   }
 
   static async createCoach(data: ICoach): Promise<ICoach> {
     const roles = data.roles || [];
     if (!roles.includes(UserRole.COACH)) roles.push(UserRole.COACH);
-    return Coach.create({ ...data, roles });
+    data.passwordHash = await bcrypt.hash(data.password, 10);
+    delete data.password;
+    return User.create({ ...data, roles });
   }
 
   static async updateCoach(id: string, data: Partial<ICoach>): Promise<ICoach | null> {
-    return Coach.findOneAndUpdate({ _id: id, roles: UserRole.COACH }, data, { new: true });
+    return User.findOneAndUpdate({ _id: id, roles: UserRole.COACH }, data, { new: true });
   }
 
   static async deleteCoach(id: string): Promise<ICoach | null> {
-    return Coach.findOneAndUpdate({ _id: id, roles: UserRole.COACH }, { isActive: false }, { new: true });
+    return User.findOneAndUpdate({ _id: id, roles: UserRole.COACH }, { isActive: false }, { new: true });
   }
 
   static async getCoachAvailability(
@@ -49,7 +45,7 @@ export class CoachService {
     
     while (current <= toDate) {
       const dayOfWeek = current.getDay();
-      const rule = coach.availabilityRules.find(r => r.dayOfWeek === dayOfWeek);
+      const rule = coach?.availabilityRules?.find(r => r.dayOfWeek === dayOfWeek);
       
       if (rule) {
         const [startHour, startMin] = rule.startTime.split(':').map(Number);

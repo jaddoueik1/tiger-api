@@ -122,17 +122,17 @@ router.post('/templates', requireAdmin, async (req, res) => {
   }
 });
 
-// GET /api/classes/templates/:id
-router.get('/templates/:id', async (req, res) => {
-  const { id } = req.params;
+// GET /api/classes/templates/:slug
+router.get('/templates/:slug', async (req, res) => {
+  const { slug } = req.params;
 
   try {
-    const template = await ClassService.getClassTemplateById(id);
+    const template = await ClassService.getClassTemplateBySlug(slug);
 
     if (!template) {
       return res.status(404).json({
         error: 'Class Template Not Found',
-        message: `Class template with id "${id}" not found`,
+        message: `Class template with slug "${slug}" not found`,
       });
     }
 

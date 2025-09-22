@@ -7,20 +7,18 @@ import swaggerUi from 'swagger-ui-express';
 import { fileURLToPath } from 'url';
 import YAML from 'yamljs';
 import { connectDatabase } from './config/database';
+import { adminRoutes } from './routes/admin';
 import { authRoutes } from './routes/auth';
 import { bookingRoutes } from './routes/bookings';
 import { classRoutes } from './routes/classes';
+import { coachEarningsRoutes } from './routes/coach-earnings';
 import { coachRoutes } from './routes/coaches';
+import { coachingSessionRoutes } from './routes/coaching-sessions';
 import { contentRoutes } from './routes/content';
-import { adminRoutes } from './routes/admin';
 import { membershipPlanRoutes } from './routes/membership-plans';
-import { privateSessionRoutes } from './routes/private-sessions';
 import { shopRoutes } from './routes/shop';
 import { userRoutes } from './routes/user';
 import { webhookRoutes } from './routes/webhooks';
-import { coachingSessionRoutes } from './routes/coaching-sessions';
-import { paymentRoutes } from './routes/payment';
-import { coachEarningsRoutes } from './routes/coach-earnings';
 
 // ESM-safe __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -52,12 +50,6 @@ app.use(
   })
 );
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use('/api', limiter);
 
 // Body parsing middleware
 app.use('/webhooks', express.raw({ type: 'application/json' })); // Stripe webhooks need raw body
@@ -87,11 +79,9 @@ app.use('/api/shop', shopRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/membership-plans', membershipPlanRoutes);
 app.use('/api/coaching-sessions', coachingSessionRoutes);
-app.use('/api/private-sessions', privateSessionRoutes);
 app.use('/api/coach-earnings', coachEarningsRoutes);
 app.use('/api/me', userRoutes);
 app.use('/webhooks', webhookRoutes);
-app.use('/api', paymentRoutes);
 
 // 404 handler
 // app.use('*', (req, res) => {

@@ -1,13 +1,10 @@
 // Export all models from a single entry point
-export { User, type IUser, type IMembership } from './User';
-export { Coach, type ICoach, type ISocialLink, type IAvailabilityRule } from './Coach';
 export { ClassDiscipline, type IClassDiscipline, type IMediaItem } from './ClassDiscipline';
-export { ClassTemplate, type IClassTemplate } from './ClassTemplate';
 export { ClassSession, type IClassSession } from './ClassSession';
-export { Product, ProductCategory, type IProduct, type IProductCategory, type IProductVariant, type IProductAttribute } from './Product';
-export { ContentBlock, type IContentBlock } from './ContentBlock';
-export { Booking, type IBooking } from './Booking';
-export { PrivateSession, type IPrivateSession } from './PrivateSession';
-export { MembershipPlan, type IMembershipPlan } from './MembershipPlan';
+export { ClassTemplate, type IClassTemplate } from './ClassTemplate';
+export { Coach, type IAvailabilityRule, type ICoach, type ISocialLink } from './Coach';
 export { CoachingSession, type ICoachingSession } from './CoachingSession';
-export { Payment, type IPayment } from './Payment';
+export { ContentBlock, type IContentBlock } from './ContentBlock';
+export { MembershipPlan, type IMembershipPlan } from './MembershipPlan';
+export { Product, ProductCategory, type IProduct, type IProductAttribute, type IProductCategory, type IProductVariant } from './Product';
+export { User, type IMembership, type IUser } from './User';
