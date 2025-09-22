@@ -20,7 +20,7 @@ export const seedCoaches = async (): Promise<void> => {
       socials: coach.socials,
       photo: coach.photo,
       specialties: coach.specialties,
-      availabilityRules: coach.availabilityRules,
+      bookedSessions: coach.bookedSessions,
       hourlyRate: coach.hourlyRate,
       isActive: coach.isActive,
       roles: [UserRole.COACH]

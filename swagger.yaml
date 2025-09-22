@@ -21,7 +21,7 @@ tags:
   - name: Classes
     description: Class schedules and templates
   - name: Coaches
-    description: Coach profiles and availability
+    description: Coach profiles and booked sessions
   - name: Auth
     description: Authentication and authorization
   - name: Shop
@@ -435,33 +435,28 @@ paths:
         '404':
           description: Coach not found
 
-  /coaches/{id}/availability:
+  /coaches/{id}/booked-sessions:
     get:
       tags: [Coaches]
-      summary: Get coach availability
+      summary: Get coach booked sessions
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: string
-        - in: query
-          name: from
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: to
-          schema:
-            type: string
-            format: date-time
       responses:
         '200':
-          description: Available time slots
+          description: Booked sessions for the coach
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BookedSession'
         '404':
           description: Coach not found
 
@@ -1007,6 +1002,10 @@ components:
           type: array
           items:
             type: string
+        bookedSessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookedSession'
         hourlyRate:
           type: number
           minimum: 0
@@ -1059,6 +1058,21 @@ components:
         url:
           type: string
           format: uri
+
+    BookedSession:
+      type: object
+      required: [sessionDate, repetition]
+      properties:
+        templateId:
+          type: string
+        name:
+          type: string
+        sessionDate:
+          type: string
+          format: date-time
+        repetition:
+          type: string
+          enum: [daily, weekly, monthly]
 
   securitySchemes:
     bearerAuth:

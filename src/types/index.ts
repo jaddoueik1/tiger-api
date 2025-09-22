@@ -69,6 +69,24 @@ export enum SessionStatus {
   COMPLETED = 'completed',
 }
 
+export interface SocialLink {
+  platform: string;
+  url: string;
+}
+
+export enum SessionRepetition {
+  DAILY = 'daily',
+  WEEKLY = 'weekly',
+  MONTHLY = 'monthly',
+}
+
+export interface BookedSession {
+  sessionDate: Date;
+  repetition: SessionRepetition;
+  templateId?: string;
+  name?: string;
+}
+
 export interface Coach {
   id: string;
   name: string;
@@ -77,22 +95,9 @@ export interface Coach {
   socials: SocialLink[];
   photo: string;
   specialties: string[];
-  availabilityRules: AvailabilityRule[];
+  bookedSessions: BookedSession[];
   hourlyRate?: number;
   isActive: boolean;
-}
-
-export interface SocialLink {
-  platform: string;
-  url: string;
-}
-
-export interface AvailabilityRule {
-  dayOfWeek: number; // 0-6
-  startTime: string; // HH:mm
-  endTime: string; // HH:mm
-  bufferMinutes: number;
-  leadTimeHours: number;
 }
 
 export interface MembershipPlan {
