@@ -33,6 +33,12 @@ export class DisciplineService {
         return ClassTemplate.find().populate('disciplineId').sort({ name: 1 });
     }
 
+    static async getClassTemplatesByDisciplineId(disciplineId: string) {
+        return ClassTemplate.find({ disciplineId })
+                .populate('disciplineId')
+                .sort({ title: 1 });
+    }
+
     static async createClassTemplate(data: {
         disciplineId: string;
         title: string;

@@ -101,6 +101,27 @@ router.get('/templates', async (req, res) => {
   }
 });
 
+// GET /api/classes/templates/discipline/:disciplineId
+router.get('/templates/discipline/:disciplineId', async (req, res) => {
+  const { disciplineId } = req.params;
+
+  try {
+    const templates = await DisciplineService.getClassTemplatesByDisciplineId(disciplineId);
+
+    const response: ApiResponse<any> = {
+      data: templates,
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Error fetching templates by discipline:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to fetch templates by discipline'
+    });
+  }
+});
+
 // POST /api/classes/templates
 router.post('/templates', requireAdmin, async (req, res) => {
   try {
