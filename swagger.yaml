@@ -1162,6 +1162,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+  /api/classes/templates/discipline/{disciplineId}:
+    get:
+      tags: [Classes]
+      summary: List class templates for a discipline
+      operationId: listClassTemplatesByDiscipline
+      parameters:
+        - in: path
+          name: disciplineId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Class templates for a discipline
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ClassTemplate'
+        '500':
+          description: Retrieval error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
   /api/classes/templates/{slug}:
     get:
       tags: [Classes]
