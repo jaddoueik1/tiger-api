@@ -14,6 +14,7 @@ import { coachRoutes } from './routes/coaches';
 import { contentRoutes } from './routes/content';
 import { membershipPlanRoutes } from './routes/membership-plans';
 import { shopRoutes } from './routes/shop';
+import { orderRoutes } from './routes/orders';
 import { userRoutes } from './routes/user';
 
 // ESM-safe __dirname
@@ -86,6 +87,7 @@ app.use('/api/classes', classRoutes);
 app.use('/api/coaches', coachRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/shop', shopRoutes);
+app.use('/api/orders', orderRoutes);
 app.use('/api/membership-plans', membershipPlanRoutes);
 app.use('/api/me', userRoutes);
 
