@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { Types } from 'mongoose';
 import { IBookedSession, ICoach, User } from '../models';
 import { UserRole } from '../types';
 
@@ -52,5 +53,18 @@ export class CoachService {
     coach.bookedSessions.push(session);
     await coach.save();
     return session;
+  }
+
+  static async getAllCoachesPublicBookedSessions(): Promise<Array<{ coachId: string; coachName: string; bookedSessions: IBookedSession[] }>> {
+    const coaches = await User.find(
+      { roles: UserRole.COACH },
+      { name: 1, bookedSessions: 1 }
+    ).lean<{ _id: Types.ObjectId; name: string; bookedSessions?: IBookedSession[] }>();
+
+    return coaches.map((coach) => ({
+      coachId: coach._id.toString(),
+      coachName: coach.name,
+      bookedSessions: (coach.bookedSessions ?? []).filter((session) => !session?.isPrivate),
+    }));
   }
 }

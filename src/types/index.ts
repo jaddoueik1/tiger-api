@@ -85,6 +85,7 @@ export interface BookedSession {
   repetition: SessionRepetition;
   templateId?: string;
   name?: string;
+  isPrivate?: boolean;
 }
 
 export interface Coach {

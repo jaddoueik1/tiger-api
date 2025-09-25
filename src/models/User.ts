@@ -65,6 +65,7 @@ const socialLinkSchema = new Schema<ISocialLink>({
 const bookedSessionSchema = new Schema<IBookedSession>({
   templateId: { type: String, trim: true },
   name: { type: String, trim: true },
+  isPrivate: { type: Boolean, default: false },
   sessionDate: { type: Date, required: true },
   repetition: {
     type: String,

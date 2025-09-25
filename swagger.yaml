@@ -215,12 +215,30 @@ components:
           type: string
         name:
           type: string
+        isPrivate:
+          type: boolean
+          description: Indicates if the session is private and should not be shown publicly
         sessionDate:
           type: string
           format: date-time
         repetition:
           type: string
           enum: [daily, weekly, monthly]
+    CoachPublicBookedSessions:
+      type: object
+      required:
+        - coachId
+        - coachName
+        - bookedSessions
+      properties:
+        coachId:
+          type: string
+        coachName:
+          type: string
+        bookedSessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookedSession'
     Coach:
       type: object
       required:
@@ -1291,6 +1309,31 @@ paths:
                         $ref: '#/components/schemas/Coach'
         '500':
           description: Creation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/coaches/booked-sessions:
+    get:
+      tags: [Coaches]
+      summary: List non-private booked sessions for all coaches
+      operationId: getAllCoachBookedSessions
+      responses:
+        '200':
+          description: Non-private booked sessions grouped by coach
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/CoachPublicBookedSessions'
+        '500':
+          description: Retrieval error
           content:
             application/json:
               schema:
