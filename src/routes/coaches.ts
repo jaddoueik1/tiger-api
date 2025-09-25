@@ -6,10 +6,16 @@ import { requireAdmin } from '../middleware/requireAdmin';
 
 const router = express.Router();
 
+interface ICoachPublicBookedSessions {
+  coachId: string;
+  coachName: string;
+  bookedSessions: IBookedSession[];
+}
+
 // GET /api/coaches
 router.get('/', async (req, res) => {
   const { specialty } = req.query;
-  
+
   try {
     const coaches = await CoachService.getAllCoaches(specialty as string);
     
@@ -42,10 +48,29 @@ router.post('/', requireAdmin, async (req, res) => {
   }
 });
 
+// GET /api/coaches/booked-sessions
+router.get('/booked-sessions', async (_req, res) => {
+  try {
+    const bookedSessions = await CoachService.getAllCoachesPublicBookedSessions();
+
+    const response: ApiResponse<ICoachPublicBookedSessions[]> = {
+      data: bookedSessions,
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Error fetching booked sessions for all coaches:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to fetch booked sessions for all coaches'
+    });
+  }
+});
+
 // GET /api/coaches/:id
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  
+
   try {
     const coach = await CoachService.getCoachById(id);
     
