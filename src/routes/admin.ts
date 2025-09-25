@@ -1,20 +1,21 @@
-import express from 'express';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { requireAdmin } from '../middleware/requireAdmin';
-import { ContentService } from '../services/contentService';
-import { ProductService } from '../services/productService';
-import { ApiResponse } from '../types';
-import { DisciplineService } from '../services/disciplineService';
-import { registerAdminUploadImageRoute } from './admin/uploadImage';
+import express from "express";
+import { promises as fs } from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { requireAdmin } from "../middleware/requireAdmin";
+import { ContentService } from "../services/contentService";
+import { ProductService } from "../services/productService";
+import { ApiResponse } from "../types";
+import { DisciplineService } from "../services/disciplineService";
+import { registerAdminUploadImageRoute } from "./admin/uploadImage";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
-const UPLOAD_DIR = path.resolve(PROJECT_ROOT, 'assets', 'uploaded-images');
+const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
+const UPLOAD_DIR = path.resolve(PROJECT_ROOT, "assets", "uploaded-images");
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
-const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp']);
+const ALLOWED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp"]);
+const SERVER_URL = process.env.SERVER_URL || "http://localhost:3001";
 
 const router = express.Router();
 
@@ -24,165 +25,247 @@ router.use(requireAdmin);
 registerAdminUploadImageRoute(router);
 
 // GET /api/admin/content
-router.get('/content', async (req, res) => {
-  const locale = (req.query.locale as string) || 'en';
+router.get("/content", async (req, res) => {
+	const locale = (req.query.locale as string) || "en";
 
-  try {
-    const content = await ContentService.getAllContent(locale);
+	try {
+		const content = await ContentService.getAllContent(locale);
 
-    const response: ApiResponse<any> = {
-      data: content,
-    };
+		const response: ApiResponse<any> = {
+			data: content,
+		};
 
-    res.json(response);
-  } catch (error) {
-    console.error('Error fetching content:', error);
-    res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to fetch content'
-    });
-  }
+		res.json(response);
+	} catch (error) {
+		console.error("Error fetching content:", error);
+		res.status(500).json({
+			error: "Internal Server Error",
+			message: "Failed to fetch content",
+		});
+	}
 });
 
 // GET /api/admin/disciplines
-router.get('/disciplines', async (req, res) => {
-  try {
-    const disciplines = await DisciplineService.getAllDisciplines();
+router.get("/disciplines", async (req, res) => {
+	try {
+		const disciplines = await DisciplineService.getAllDisciplines();
 
-    const response: ApiResponse<any> = {
-      data: disciplines,
-    };
+		const response: ApiResponse<any> = {
+			data: disciplines,
+		};
 
-    res.json(response);
-  } catch (error) {
-    console.error('Error fetching disciplines:', error);
-    res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to fetch disciplines'
-    });
-  }
+		res.json(response);
+	} catch (error) {
+		console.error("Error fetching disciplines:", error);
+		res.status(500).json({
+			error: "Internal Server Error",
+			message: "Failed to fetch disciplines",
+		});
+	}
 });
 
 // GET /api/admin/class-templates
-router.get('/class-templates', async (req, res) => {
-  try {
-    const templates = await DisciplineService.getClassTemplates();
+router.get("/class-templates", async (req, res) => {
+	try {
+		const templates = await DisciplineService.getClassTemplates();
 
-    const response: ApiResponse<any> = {
-      data: templates,
-    };
+		const response: ApiResponse<any> = {
+			data: templates,
+		};
 
-    res.json(response);
-  } catch (error) {
-    console.error('Error fetching class templates:', error);
-    res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to fetch class templates'
-    });
-  }
+		res.json(response);
+	} catch (error) {
+		console.error("Error fetching class templates:", error);
+		res.status(500).json({
+			error: "Internal Server Error",
+			message: "Failed to fetch class templates",
+		});
+	}
 });
-
 
 // GET /api/admin/product-categories
-router.get('/product-categories', async (req, res) => {
-  try {
-    const categories = await ProductService.getAllCategories();
+router.get("/product-categories", async (req, res) => {
+	try {
+		const categories = await ProductService.getAllCategories();
 
-    const response: ApiResponse<any> = {
-      data: categories,
-    };
+		const response: ApiResponse<any> = {
+			data: categories,
+		};
 
-    res.json(response);
-  } catch (error) {
-    console.error('Error fetching product categories:', error);
-    res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to fetch product categories'
-    });
-  }
+		res.json(response);
+	} catch (error) {
+		console.error("Error fetching product categories:", error);
+		res.status(500).json({
+			error: "Internal Server Error",
+			message: "Failed to fetch product categories",
+		});
+	}
 });
 
-router.post('/upload-image', async (req, res) => {
-  const body = req.body as { fileName?: string; imageData?: string } | undefined;
-  const { fileName, imageData } = body ?? {};
+router.post("/upload-image", async (req, res) => {
+	const body = req.body as
+		| { fileName?: string; imageData?: string }
+		| undefined;
+	const { fileName, imageData } = body ?? {};
 
-  if (!body || typeof body !== 'object') {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: 'Invalid request payload',
-    });
-  }
+	if (!body || typeof body !== "object") {
+		return res.status(400).json({
+			error: "Bad Request",
+			message: "Invalid request payload",
+		});
+	}
 
-  if (!fileName || !imageData) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: 'Both fileName and imageData are required',
-    });
-  }
+	if (!fileName || !imageData) {
+		return res.status(400).json({
+			error: "Bad Request",
+			message: "Both fileName and imageData are required",
+		});
+	}
 
-  const sanitizedName = sanitizeFileName(fileName);
-  const extension = path.extname(sanitizedName).toLowerCase();
-  const nameWithoutExtension = path.basename(sanitizedName, extension);
+	const sanitizedName = sanitizeFileName(fileName);
+	const extension = path.extname(sanitizedName).toLowerCase();
+	const nameWithoutExtension = path.basename(sanitizedName, extension);
 
-  if (!extension || !ALLOWED_EXTENSIONS.has(extension) || !nameWithoutExtension) {
-    return res.status(400).json({
-      error: 'Unsupported Media Type',
-      message: `File extension ${extension || 'unknown'} is not allowed`,
-    });
-  }
+	if (
+		!extension ||
+		!ALLOWED_EXTENSIONS.has(extension) ||
+		!nameWithoutExtension
+	) {
+		return res.status(400).json({
+			error: "Unsupported Media Type",
+			message: `File extension ${extension || "unknown"} is not allowed`,
+		});
+	}
 
-  const dataUrlMatch = imageData.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
-  const base64Payload = (dataUrlMatch ? dataUrlMatch[2] : imageData).replace(/\s/g, '');
+	const dataUrlMatch = imageData.match(
+		/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/
+	);
+	const base64Payload = (dataUrlMatch ? dataUrlMatch[2] : imageData).replace(
+		/\s/g,
+		""
+	);
 
-  let buffer: Buffer;
-  try {
-    buffer = Buffer.from(base64Payload, 'base64');
-  } catch (error) {
-    console.error('Failed to decode base64 image data', error);
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: 'Invalid base64 image data',
-    });
-  }
+	let buffer: Buffer;
+	try {
+		buffer = Buffer.from(base64Payload, "base64");
+	} catch (error) {
+		console.error("Failed to decode base64 image data", error);
+		return res.status(400).json({
+			error: "Bad Request",
+			message: "Invalid base64 image data",
+		});
+	}
 
-  if (!buffer.length) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: 'Image data is empty',
-    });
-  }
+	if (!buffer.length) {
+		return res.status(400).json({
+			error: "Bad Request",
+			message: "Image data is empty",
+		});
+	}
 
-  if (buffer.length > MAX_FILE_SIZE_BYTES) {
-    return res.status(413).json({
-      error: 'Payload Too Large',
-      message: 'Image exceeds the maximum allowed size of 5MB',
-    });
-  }
+	if (buffer.length > MAX_FILE_SIZE_BYTES) {
+		return res.status(413).json({
+			error: "Payload Too Large",
+			message: "Image exceeds the maximum allowed size of 5MB",
+		});
+	}
 
-  try {
-    await ensureUploadDirectory();
-    const uniqueFileName = await getUniqueFileName(sanitizedName);
-    const filePath = path.join(UPLOAD_DIR, uniqueFileName);
-    await fs.writeFile(filePath, buffer);
+	try {
+		await ensureUploadDirectory();
+		const uniqueFileName = await getUniqueFileName(sanitizedName);
+		const filePath = path.join(UPLOAD_DIR, uniqueFileName);
+		await fs.writeFile(filePath, buffer);
 
-    const relativePath = path.relative(PROJECT_ROOT, filePath).split(path.sep).join('/');
-    const response: ApiResponse<{ fileName: string; path: string; url: string }> = {
-      data: {
-        fileName: uniqueFileName,
-        path: relativePath,
-        url: `/assets/uploaded-images/${uniqueFileName}`,
-      },
-    };
+		const relativePath = path
+			.relative(PROJECT_ROOT, filePath)
+			.split(path.sep)
+			.join("/");
+		const response: ApiResponse<{
+			fileName: string;
+			path: string;
+			url: string;
+		}> = {
+			data: {
+				fileName: uniqueFileName,
+				path: relativePath,
+				url: `/assets/uploaded-images/${uniqueFileName}`,
+			},
+		};
 
-    res.status(201).json(response);
-  } catch (error) {
-    console.error('Failed to save uploaded image', error);
-    res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to store uploaded image',
-    });
-  }
+		res.status(201).json(response);
+	} catch (error) {
+		console.error("Failed to save uploaded image", error);
+		res.status(500).json({
+			error: "Internal Server Error",
+			message: "Failed to store uploaded image",
+		});
+	}
 });
+
+const ensureUploadDirectory = async () => {
+    try {
+        await fs.mkdir(UPLOAD_DIR, { recursive: true });
+    } catch (error) {
+        console.error("Failed to create upload directory", error);
+        throw error;
+    }
+};
+
+router.get("/images", async (req, res) => {
+	try {
+		await ensureUploadDirectory();
+		const files = await fs.readdir(UPLOAD_DIR);
+		const images = files.filter((file) =>
+			ALLOWED_EXTENSIONS.has(path.extname(file).toLowerCase())
+		);
+		const response: ApiResponse<{ fileName: string; url: string }[]> = {
+			data: images.map((fileName) => ({
+				fileName,
+				url: `${SERVER_URL}/assets/uploaded-images/${fileName}`,
+			})),
+		};
+		res.json(response);
+	} catch (error) {
+		console.error("Failed to list uploaded images", error);
+		res.status(500).json({
+			error: "Internal Server Error",
+			message: "Failed to list uploaded images",
+		});
+	}
+});
+
+
+router.delete("/images/:fileName", async (req, res) => {
+    const { fileName } = req.params;
+    if (!fileName) {
+        return res.status(400).json({
+            error: "Bad Request",
+            message: "fileName parameter is required",
+        });
+    }
+    const sanitizedFileName = sanitizeFileName(fileName);
+    const filePath = path.join(UPLOAD_DIR, sanitizedFileName);
+    try {
+        await fs.unlink(filePath);
+        res.json({ message: "Image deleted successfully" });
+    } catch (error) {
+        console.error("Failed to delete image", error);
+        if (error.code === 'ENOENT') {
+            return res.status(404).json({
+                error: "Not Found",
+                message: "Image not found",
+
+            });
+        }
+        res.status(500).json({
+            error: "Internal Server Error",
+            message: "Failed to delete image",
+        });
+    }
+});
+
+const sanitizeFileName = (fileName: string) => {
+    return fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+};
 
 export { router as adminRoutes };
-
