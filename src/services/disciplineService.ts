@@ -1,5 +1,5 @@
-import { ClassDiscipline, ClassTemplate } from "../models";
 import mongoose from "mongoose";
+import { ClassDiscipline, ClassTemplate } from "../models";
 
 export class DisciplineService {
 	static async getAllDisciplines() {
@@ -37,7 +37,6 @@ export class DisciplineService {
 	static async getClassTemplatesByDisciplineId(disciplineId: string) {
 		return ClassTemplate.find({ disciplineId })
 			.populate("disciplineId")
-			.populate("coachIds")
 			.sort({ title: 1 });
 	}
 

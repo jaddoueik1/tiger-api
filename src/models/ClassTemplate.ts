@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { ClassLevel } from "../types";
+import { ClassLevel, Coach } from "../types";
 
 export interface IClassTemplate extends Document {
 	disciplineId: mongoose.Types.ObjectId;
@@ -12,7 +12,7 @@ export interface IClassTemplate extends Document {
 	prerequisites?: string[];
 	createdAt: Date;
 	updatedAt: Date;
-	coaches: mongoose.Types.ObjectId[];
+	coaches: Coach[];
 }
 
 const classTemplateSchema = new Schema<IClassTemplate>(
