@@ -3,6 +3,7 @@ import { CoachService } from '../services/coachService';
 import { ApiResponse } from '../types';
 import { IBookedSession } from '../models';
 import { requireAdmin } from '../middleware/requireAdmin';
+import { upload } from '../middleware/upload';
 
 const router = express.Router();
 
@@ -34,9 +35,18 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/coaches
-router.post('/', requireAdmin, async (req, res) => {
+router.post('/', requireAdmin, upload.single('photo'), async (req, res) => {
   try {
-    const coach = await CoachService.createCoach(req.body);
+    const data: any = { ...req.body };
+    ['accolades', 'socials', 'specialties', 'availabilityRules'].forEach(field => {
+      if (typeof data[field] === 'string') {
+        try { data[field] = JSON.parse(data[field]); } catch { }
+      }
+    });
+    if (req.file) {
+      data.photo = `/static/uploads/${req.file.filename}`;
+    }
+    const coach = await CoachService.createCoach(data);
     const response: ApiResponse<any> = { data: coach };
     res.status(201).json(response);
   } catch (error) {
@@ -96,10 +106,19 @@ router.get('/:id', async (req, res) => {
 });
 
 // PUT /api/coaches/:id
-router.put('/:id', requireAdmin, async (req, res) => {
+router.put('/:id', requireAdmin, upload.single('photo'), async (req, res) => {
   const { id } = req.params;
   try {
-    const coach = await CoachService.updateCoach(id, req.body);
+    const data: any = { ...req.body };
+    ['accolades', 'socials', 'specialties', 'availabilityRules'].forEach(field => {
+      if (typeof data[field] === 'string') {
+        try { data[field] = JSON.parse(data[field]); } catch { }
+      }
+    });
+    if (req.file) {
+      data.photo = `/static/uploads/${req.file.filename}`;
+    }
+    const coach = await CoachService.updateCoach(id, data);
     if (!coach) {
       return res.status(404).json({
         error: 'Coach Not Found',
