@@ -8,7 +8,7 @@ export const contentBlocks: ContentBlock[] = [
 		json: {
 			title: "Train Hard. Evolve Faster.",
 			subtitle:
-				"World-class MMA, BJJ, Muay Thai, and Boxing training in a state-of-the-art facility.",
+				"Elite MMA, BJJ, Muay Thai, and Boxing coaching inside a world-class facility built for champions.",
 			ctas: [{ label: "View Schedule", href: "/schedule", variant: "primary" }],
 			media: {
 				type: "image",
@@ -30,24 +30,25 @@ export const contentBlocks: ContentBlock[] = [
 					icon: "target",
 					title: "Expert Instruction",
 					description:
-						"Learn from world-class fighters and certified instructors with championship experience.",
+						"Train under seasoned fighters, certified coaches, and competition veterans who know exactly how to take you to the next level.",
 				},
 				{
 					icon: "users",
 					title: "Supportive Community",
 					description:
-						"Join a welcoming environment where everyone supports each other's growth.",
+						"Be part of a culture where beginners and advanced athletes grow together, without ego and without judgment.",
 				},
 				{
 					icon: "trophy",
 					title: "Proven Results",
 					description:
-						"Our students consistently achieve their fitness and competition goals.",
+						"Our students consistently transform their fitness, sharpen their skills, and achieve podium-level performance.",
 				},
 				{
 					icon: "clock",
 					title: "Flexible Schedule",
-					description: "Classes throughout the day to fit your busy lifestyle.",
+					description:
+						"Morning, afternoon, and evening classes designed to fit perfectly into any lifestyle.",
 				},
 			],
 		},
@@ -60,32 +61,7 @@ export const contentBlocks: ContentBlock[] = [
 		locale: "en",
 		json: {
 			title: "What Our Students Say",
-			items: [
-				{
-					name: "Sarah Chen",
-					role: "BJJ Blue Belt",
-					content:
-						"The instruction here is incredible. I've learned more in 6 months than I did in 2 years at my previous gym.",
-					avatar:
-						"https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
-				},
-				{
-					name: "Marcus Rodriguez",
-					role: "MMA Fighter",
-					content:
-						"This gym helped me prepare for my professional debut. The coaching staff is world-class.",
-					avatar:
-						"https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg",
-				},
-				{
-					name: "Emily Johnson",
-					role: "Fitness Enthusiast",
-					content:
-						"Best workout I've ever had. The energy here is amazing and everyone is so supportive.",
-					avatar:
-						"https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg",
-				},
-			],
+			items: [],
 		},
 		createdAt: new Date(),
 		updatedAt: new Date(),
@@ -119,9 +95,8 @@ export const contentBlocks: ContentBlock[] = [
 					title: "Training",
 					links: [
 						{ label: "Class Schedule", href: "/schedule" },
-						{ label: "Private Training", href: "/private" },
+						{ label: "Private Training", href: "/coaches" },
 						{ label: "Memberships", href: "/pricing" },
-						{ label: "Trial Class", href: "/trial" },
 					],
 				},
 				{
@@ -145,13 +120,12 @@ export const contentBlocks: ContentBlock[] = [
 			],
 			contact: {
 				address: "Jnah, Beirut, Lebanon",
-				phone: "+961 (71) 234-567",
-				email: "info@tigermuaythailb.com",
+				phone: "+961 (78) 967-230",
+				email: "info@tigermuaythai.me",
 			},
 			socials: [
-				{ platform: "instagram", url: "https://instagram.com/tigermuaythailb" },
-				{ platform: "facebook", url: "https://facebook.com/tigermuaythailb" },
-				{ platform: "youtube", url: "https://youtube.com/tigermuaythailb" },
+				{ platform: "instagram", url: "https://instagram.com/tigermuaythaigym" },
+				{ platform: "facebook", url: "https://facebook.com/tigermuaythaigym" },
 			],
 		},
 		createdAt: new Date(),
@@ -170,14 +144,14 @@ export const contentBlocks: ContentBlock[] = [
 					title: "Mixed Martial Arts (MMA)",
 					subtitle: "Fundamentals to Pro",
 					description:
-						"Striking, wrestling, and grappling integrated into a complete game. Drill, spar, and develop well-rounded skills.",
+						"Develop a complete MMA skillset with integrated striking, wrestling, and grappling. Improve through structured drills, partner work, and optional sparring as your confidence grows.",
 					icon: "swords",
 					features: [
 						"All levels",
 						"Integrated striking + grappling",
 						"Sparring optional",
 					],
-					href: "/classes/mma",
+					href: "/discipline/mma",
 					ctaLabel: "View Schedule",
 					badge: "Popular",
 				},
@@ -186,14 +160,10 @@ export const contentBlocks: ContentBlock[] = [
 					title: "Brazilian Jiu-Jitsu (Gi / No-Gi)",
 					subtitle: "Leverage & technique",
 					description:
-						"Gi and No-Gi classes focusing on positional control, submissions, and competition strategy.",
+						"Gi and No-Gi training focused on leverage, control, and submission mastery. Build clean fundamentals or refine advanced tactics for competition.",
 					icon: "shieldCheck",
-					features: [
-						"Gi & No-Gi days",
-						"All belts welcome",
-						"Competition prep",
-					],
-					href: "/classes/bjj",
+					features: ["Gi & No-Gi days", "All belts welcome", "Competition prep"],
+					href: "/discipline/bjj",
 					ctaLabel: "View Schedule",
 				},
 				{
@@ -201,10 +171,10 @@ export const contentBlocks: ContentBlock[] = [
 					title: "Muay Thai",
 					subtitle: "Striking • Clinch • Kicks",
 					description:
-						"Traditional Thai boxing with emphasis on pad work, footwork, clinch, and ring IQ.",
+						"Authentic Thai boxing emphasizing pad work, footwork, clinch control, and ring strategy. Ideal for beginners and fighters preparing for competition.",
 					icon: "badgeCheck",
 					features: ["Pad work", "Bag rounds", "Conditioning"],
-					href: "/classes/muay-thai",
+					href: "/discipline/muay-thai",
 					ctaLabel: "View Schedule",
 				},
 				{
@@ -212,14 +182,14 @@ export const contentBlocks: ContentBlock[] = [
 					title: "Boxing",
 					subtitle: "Footwork • Defense • Combinations",
 					description:
-						"Build crisp fundamentals and ring craft: stance, head movement, counters, and sparring for those who opt in.",
+						"Sharpen your striking with a focus on footwork, defensive movement, powerful combinations, and optional technical sparring for those progressing.",
 					icon: "sparkles",
 					features: [
 						"Beginners welcome",
 						"Technical sparring (opt-in)",
 						"Drills & mitts",
 					],
-					href: "/classes/boxing",
+					href: "/discipline/boxing",
 					ctaLabel: "View Schedule",
 				},
 				{
@@ -227,10 +197,10 @@ export const contentBlocks: ContentBlock[] = [
 					title: "Strength & Conditioning",
 					subtitle: "Power • Mobility • Engine",
 					description:
-						"Fight-ready strength, mobility, and energy system work to support your skill training.",
+						"Athlete-level strength training combining mobility, power development, and conditioning to boost your overall fight performance.",
 					icon: "dumbbell",
 					features: ["Periodized plans", "Mobility focus", "All levels"],
-					href: "/classes/strength-conditioning",
+					href: "/discipline/strength-conditioning",
 					ctaLabel: "View Schedule",
 				},
 				{
@@ -238,7 +208,7 @@ export const contentBlocks: ContentBlock[] = [
 					title: "Private Training",
 					subtitle: "One-on-one with a coach",
 					description:
-						"Personalized sessions tailored to your goals and schedule. Pick a coach, select a slot, and book online.",
+						"Personalized one-on-one sessions built around your goals—whether fitness, technique, or competition prep. Choose your coach and train on your schedule.",
 					icon: "calendarClock",
 					features: ["Coach picker", "Flexible times", "Goal-based planning"],
 					href: "/private-training",
@@ -259,7 +229,7 @@ export const contentBlocks: ContentBlock[] = [
 			kicker: null,
 			title: "Building Fighters. Building Community.",
 			subtitle:
-				"From first-day fundamentals to championship camps, we exist to help you evolve—on and off the mats.",
+				"From your first day on the mats to advanced fight camps, our mission is to help you grow—physically, mentally, and as part of a team.",
 			media: { src: "/static/main.jpg", alt: "Gym floor" },
 		},
 		createdAt: new Date(),
@@ -272,8 +242,8 @@ export const contentBlocks: ContentBlock[] = [
 		json: {
 			title: "Mission & Philosophy",
 			body: [
-				"We believe combat sports teach more than techniques—they teach resilience, humility, and focus.",
-				"Our coaching blends tradition and modern sports science to create a safe, supportive path for every athlete.",
+				"Combat sports build far more than physical ability—they develop resilience, humility, discipline, and confidence that carry into every part of life.",
+				"Our approach blends traditional martial arts values with modern sports science to create a structured, safe environment where every athlete can progress.",
 			],
 			media: { src: "/static/about.jpg", alt: "Coaching on pads" },
 			cta: { label: "Meet the Coaches", href: "/coaches" },
@@ -292,33 +262,37 @@ export const contentBlocks: ContentBlock[] = [
 					icon: "shieldCheck",
 					title: "Safety First",
 					description:
-						"Structured progressions, protective culture, and smart training.",
+						"Smart progressions, protective habits, and controlled training environments to keep athletes learning without unnecessary risks.",
 				},
 				{
 					icon: "target",
 					title: "Technical Excellence",
-					description: "Detail-oriented coaching and accountable standards.",
+					description:
+						"Coaching focused on precision, fundamentals, and accountability to ensure long-term growth.",
 				},
 				{
 					icon: "users",
 					title: "Community",
-					description: "Ego-free mats where everyone contributes and grows.",
+					description:
+						"A supportive and ego-free culture where teammates push each other to improve.",
 				},
 				{
 					icon: "heartPulse",
 					title: "Health",
-					description: "Longevity, mobility, and mental well-being come first.",
+					description:
+						"Training built for longevity—prioritizing mobility, proper mechanics, and mental well-being.",
 				},
 				{
 					icon: "award",
 					title: "Results",
 					description:
-						"Clear goals, trackable progress, and competitive pathways.",
+						"Clear goals, measurable progress, and dedicated guidance for recreational and competitive athletes alike.",
 				},
 				{
 					icon: "sparkles",
 					title: "Respect",
-					description: "Tradition, partners, and facility treated with care.",
+					description:
+						"We uphold martial arts values—respecting training partners, coaches, and the space we share.",
 				},
 			],
 		},
@@ -332,7 +306,7 @@ export const contentBlocks: ContentBlock[] = [
 		json: {
 			items: [
 				{ value: "10k+", label: "Classes Taught" },
-				{ value: "1,200+", label: "Active Members" },
+				{ value: "200+", label: "Active Members" },
 				{ value: "60+", label: "Weekly Sessions" },
 				{ value: "50+", label: "Podium Finishes" },
 			],
@@ -348,28 +322,16 @@ export const contentBlocks: ContentBlock[] = [
 			title: "Leadership & Coaches",
 			items: [
 				{
-					name: "Ali Haddad",
-					role: "Head Coach – MMA",
-					specialties: ["MMA Strategy", "Wrestling Integration", "Cornering"],
+					name: "Hassan Berjawi",
+					role: "Head Coach",
+					specialties: [
+						"MMA Strategy",
+						"Wrestling Integration",
+						"Cornering",
+					],
 					photo:
 						"https://images.pexels.com/photos/4754149/pexels-photo-4754149.jpeg",
 					socials: [{ platform: "instagram", url: "https://instagram.com/" }],
-				},
-				{
-					name: "Rina Santos",
-					role: "BJJ Lead – Gi/No-Gi",
-					specialties: ["Guard Systems", "Competition Prep"],
-					photo:
-						"https://images.pexels.com/photos/799156/pexels-photo-799156.jpeg",
-					socials: [{ platform: "facebook", url: "https://facebook.com/" }],
-				},
-				{
-					name: "Maksim Petrov",
-					role: "Muay Thai Head Coach",
-					specialties: ["Clinch", "Pad Work"],
-					photo:
-						"https://images.pexels.com/photos/4178577/pexels-photo-4178577.jpeg",
-					socials: [{ platform: "youtube", url: "https://youtube.com/" }],
 				},
 			],
 			cta: { label: "View All Coaches", href: "/coaches" },
@@ -387,18 +349,20 @@ export const contentBlocks: ContentBlock[] = [
 				{
 					date: "2008",
 					title: "Doors Opened",
-					description: "Launched our first mat in Beirut with 3 daily classes.",
+					description:
+						"Started with a single mat and a vision to bring structured combat sports training to Beirut.",
 				},
 				{
 					date: "2020",
 					title: "Competition Team",
 					description:
-						"Built a structured pathway from fundamentals to fight camps.",
+						"Introduced a complete pathway from foundational classes to advanced competition preparation.",
 				},
 				{
 					date: "2023",
 					title: "Expanded Facility",
-					description: "Added a full-size ring, extra mats, and S&C area.",
+					description:
+						"Upgraded the gym with a full-size ring, expanded mat space, and a fully equipped strength area.",
 				},
 			],
 		},
@@ -411,7 +375,8 @@ export const contentBlocks: ContentBlock[] = [
 		locale: "en",
 		json: {
 			title: "Ready to Start?",
-			subtitle: "Pick a class, meet the team, and take your first step.",
+			subtitle:
+				"Pick a class, meet the team, and take your first step.",
 			cta: { label: "Book a Trial Class", href: "/pricing" },
 		},
 		createdAt: new Date(),
@@ -424,7 +389,7 @@ export const contentBlocks: ContentBlock[] = [
 		json: {
 			title: "Checkout",
 			subtitle:
-				"Confirm your details and we’ll finalize your order on WhatsApp.",
+				"Review your information and we’ll finalize your order instantly through WhatsApp.",
 			fields: {
 				name: "Full name",
 				email: "Email",

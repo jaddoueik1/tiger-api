@@ -74,7 +74,7 @@ export const products: Product[] = [
     price: 29,
     stock: 90,
     attributes: [
-      { key: 'material', value: 'Polyester blend' },
+      { key: 'material', value: 'Polyester blend' }, 
       { key: 'features', value: 'Moisture-wicking' },
       { key: 'fit', value: 'Athletic' }
     ],

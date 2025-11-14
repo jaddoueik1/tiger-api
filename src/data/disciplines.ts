@@ -5,7 +5,8 @@ export const disciplines: ClassDiscipline[] = [
     id: '1',
     slug: 'brazilian-jiu-jitsu',
     name: 'Brazilian Jiu-Jitsu',
-    description: 'The gentle art focusing on ground fighting, leverage, and technique over strength.',
+    description:
+      'A refined grappling art built on leverage, timing, and strategic control. BJJ offers a highly technical system of sweeps, escapes, submissions, and positional dominance—ideal for self-defense, competition, and long-term athletic development. Suitable for all levels, with Gi and No-Gi pathways for focused progression.',
     tags: ['grappling', 'ground-game', 'submissions', 'self-defense'],
     media: [
       {
@@ -19,7 +20,8 @@ export const disciplines: ClassDiscipline[] = [
     id: '2',
     slug: 'muay-thai',
     name: 'Muay Thai',
-    description: 'The art of eight limbs utilizing fists, elbows, knees, and shins.',
+    description:
+      'The elegant yet powerful art of eight limbs—combining punches, elbows, knees, and kicks with sophisticated timing and balance. Our Muay Thai program emphasizes authentic Thai fundamentals, fight-proven clinch work, pad rhythm, conditioning, and ring intelligence. Ideal for beginners seeking structure and fighters preparing for competition.',
     tags: ['striking', 'kickboxing', 'clinch', 'conditioning'],
     media: [
       {
@@ -33,7 +35,8 @@ export const disciplines: ClassDiscipline[] = [
     id: '3',
     slug: 'boxing',
     name: 'Boxing',
-    description: 'Sweet science of punching with precision, footwork, and defensive skills.',
+    description:
+      'A precision striking discipline centered around footwork, defensive mastery, timing, and crisp punching mechanics. Our boxing program develops technical sharpness, ring awareness, and athletic endurance through structured drilling, mitt work, and controlled sparring pathways. Designed for both newcomers and advanced practitioners refining competitive skills.',
     tags: ['striking', 'footwork', 'defense', 'conditioning'],
     media: [
       {
@@ -47,7 +50,8 @@ export const disciplines: ClassDiscipline[] = [
     id: '4',
     slug: 'mma',
     name: 'Mixed Martial Arts',
-    description: 'Complete fighting system combining striking, grappling, and ground fighting.',
+    description:
+      'A complete and modern combat system integrating striking, wrestling, and Brazilian Jiu-Jitsu into one unified framework. Our MMA program follows a systematic progression—stand-up engagement, takedown entries, cage work, positional control, and finishing mechanics. Ideal for athletes seeking professional-level development and those wanting the most well-rounded combat experience.',
     tags: ['complete-fighting', 'striking', 'grappling', 'cage-work'],
     media: [
       {
