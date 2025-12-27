@@ -142,13 +142,16 @@ router.get('/templates/:slug', async (req, res) => {
   const { slug } = req.params;
 
   try {
-    const template = await DisciplineService.getClassTemplateBySlug(slug);
+    var template = await DisciplineService.getClassTemplateBySlug(slug);
 
     if (!template) {
-      return res.status(404).json({
-        error: 'Class Template Not Found',
-        message: `Class template with slug "${slug}" not found`,
-      });
+        template = await DisciplineService.getClassTemplateById(slug);
+        if (!template) {
+            return res.status(404).json({
+                error: 'Class Template Not Found',
+                message: `Class template with slug "${slug}" not found`,
+            });
+        }
     }
 
     const response: ApiResponse<any> = {

@@ -14,6 +14,12 @@ export class DisciplineService {
 		name: string;
 		description?: string;
 		mediaItems?: any[];
+		prices?: {
+			dropIn?: number;
+			pack10?: number;
+			monthly?: number;
+			unlimited?: number;
+		};
 	}) {
 		const discipline = new ClassDiscipline(data);
 		return discipline.save();
@@ -21,7 +27,17 @@ export class DisciplineService {
 
 	static async updateDiscipline(
 		id: string,
-		data: Partial<{ name: string; description?: string; mediaItems?: any[] }>
+		data: Partial<{
+			name: string;
+			description?: string;
+			mediaItems?: any[];
+			prices?: {
+				dropIn?: number;
+				pack10?: number;
+				monthly?: number;
+				unlimited?: number;
+			};
+		}>
 	) {
 		return ClassDiscipline.findByIdAndUpdate(id, data, { new: true });
 	}
@@ -57,6 +73,10 @@ export class DisciplineService {
 		return ClassTemplate.findOne({ slug }).populate("disciplineId");
 	}
 
+    static async getClassTemplateById(id: string) {
+        return ClassTemplate.findById(id).populate("disciplineId");
+    }
+
 	static async updateClassTemplate(
 		id: string,
 		data: Partial<{
@@ -88,7 +108,6 @@ export class DisciplineService {
 		if (nextCoaches !== undefined) {
 			update.$set.coaches = nextCoaches; // full replace
 		}
-
 
 		return ClassTemplate.findByIdAndUpdate(id, update, {
 			new: true,

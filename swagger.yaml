@@ -164,7 +164,7 @@ components:
         media:
           type: array
           items:
-            $ref: '#/components/schemas/MediaItem'
+            $ref: "#/components/schemas/MediaItem"
     ClassTemplate:
       type: object
       required:
@@ -174,7 +174,7 @@ components:
         - level
         - durationMin
         - description
-        - gearNeeded
+        - capacity
         - coachIds
       properties:
         id:
@@ -191,10 +191,31 @@ components:
           type: integer
         description:
           type: string
-        gearNeeded:
-          type: array
-          items:
-            type: string
+        capacity:
+          type: integer
+          default: 20
+        prices:
+          type: object
+          properties:
+            dropIn:
+              type: number
+            pack10:
+              type: number
+            monthly:
+              type: number
+            unlimited:
+              type: number
+        prices:
+          type: object
+          properties:
+            dropIn:
+              type: number
+            pack10:
+              type: number
+            monthly:
+              type: number
+            unlimited:
+              type: number
         coachIds:
           type: array
           items:
@@ -238,7 +259,7 @@ components:
         bookedSessions:
           type: array
           items:
-            $ref: '#/components/schemas/BookedSession'
+            $ref: "#/components/schemas/BookedSession"
     Coach:
       type: object
       required:
@@ -265,7 +286,7 @@ components:
         socials:
           type: array
           items:
-            $ref: '#/components/schemas/SocialLink'
+            $ref: "#/components/schemas/SocialLink"
         photo:
           type: string
           format: uri
@@ -276,7 +297,7 @@ components:
         bookedSessions:
           type: array
           items:
-            $ref: '#/components/schemas/BookedSession'
+            $ref: "#/components/schemas/BookedSession"
         hourlyRate:
           type: number
         isActive:
@@ -385,7 +406,7 @@ components:
         variants:
           type: array
           items:
-            $ref: '#/components/schemas/ProductVariant'
+            $ref: "#/components/schemas/ProductVariant"
         price:
           type: number
         compareAtPrice:
@@ -395,7 +416,7 @@ components:
         attributes:
           type: array
           items:
-            $ref: '#/components/schemas/ProductAttribute'
+            $ref: "#/components/schemas/ProductAttribute"
         isActive:
           type: boolean
     ProductCategory:
@@ -451,7 +472,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/CartItem'
+            $ref: "#/components/schemas/CartItem"
         subtotal:
           type: number
           readOnly: true
@@ -508,11 +529,11 @@ components:
           type: string
           readOnly: true
         customer:
-          $ref: '#/components/schemas/OrderCustomer'
+          $ref: "#/components/schemas/OrderCustomer"
         products:
           type: array
           items:
-            $ref: '#/components/schemas/OrderItem'
+            $ref: "#/components/schemas/OrderItem"
         deliveryMethod:
           type: string
         status:
@@ -534,20 +555,20 @@ components:
         - deliveryMethod
       properties:
         customer:
-          $ref: '#/components/schemas/OrderCustomer'
+          $ref: "#/components/schemas/OrderCustomer"
         products:
           type: array
           items:
-            $ref: '#/components/schemas/OrderItem'
+            $ref: "#/components/schemas/OrderItem"
         deliveryMethod:
           type: string
         status:
           type: string
           enum: [placed, in_delivery, completed]
         shippingAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         billingAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         createdAt:
           type: string
           format: date-time
@@ -618,7 +639,7 @@ paths:
       summary: Health check
       operationId: getHealth
       responses:
-        '200':
+        "200":
           description: API is healthy
           content:
             application/json:
@@ -649,13 +670,13 @@ paths:
                 password:
                   type: string
       responses:
-        '200':
+        "200":
           description: Login succeeded
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
@@ -664,25 +685,25 @@ paths:
                           token:
                             type: string
                           user:
-                            $ref: '#/components/schemas/User'
-        '400':
+                            $ref: "#/components/schemas/User"
+        "400":
           description: Missing credentials
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Invalid credentials
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Authentication error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/auth/register:
     post:
       tags: [Auth]
@@ -706,13 +727,13 @@ paths:
                 phone:
                   type: string
       responses:
-        '201':
+        "201":
           description: Registration succeeded
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
@@ -721,25 +742,25 @@ paths:
                           token:
                             type: string
                           user:
-                            $ref: '#/components/schemas/User'
-        '400':
+                            $ref: "#/components/schemas/User"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: User already exists
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Registration failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/content/{key}:
     parameters:
       - in: path
@@ -759,29 +780,29 @@ paths:
             type: string
             default: en
       responses:
-        '200':
+        "200":
           description: Content block JSON
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         description: Localized JSON content
-        '404':
+        "404":
           description: Content block not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     put:
       tags: [Content]
       summary: Create or update a content block
@@ -803,29 +824,29 @@ paths:
                   description: Arbitrary JSON payload to persist
                   type: object
       responses:
-        '200':
+        "200":
           description: Content block saved
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/ContentBlock'
-        '400':
+                        $ref: "#/components/schemas/ContentBlock"
+        "400":
           description: Missing JSON payload
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Save error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     delete:
       tags: [Content]
       summary: Delete a localized content block
@@ -839,29 +860,29 @@ paths:
             type: string
             default: en
       responses:
-        '200':
+        "200":
           description: Content block deleted
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/ContentBlock'
-        '404':
+                        $ref: "#/components/schemas/ContentBlock"
+        "404":
           description: Content block not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Deletion error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/admin/content:
     get:
       tags: [Admin]
@@ -876,25 +897,25 @@ paths:
             type: string
             default: en
       responses:
-        '200':
+        "200":
           description: Content blocks
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ContentBlock'
-        '500':
+                          $ref: "#/components/schemas/ContentBlock"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/admin/disciplines:
     get:
       tags: [Admin]
@@ -903,25 +924,25 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Disciplines
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ClassDiscipline'
-        '500':
+                          $ref: "#/components/schemas/ClassDiscipline"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/admin/class-templates:
     get:
       tags: [Admin]
@@ -930,25 +951,25 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Class templates
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ClassTemplate'
-        '500':
+                          $ref: "#/components/schemas/ClassTemplate"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/admin/product-categories:
     get:
       tags: [Admin]
@@ -957,50 +978,50 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Product categories
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ProductCategory'
-        '500':
+                          $ref: "#/components/schemas/ProductCategory"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/classes/disciplines:
     get:
       tags: [Classes]
       summary: List class disciplines
       operationId: listDisciplines
       responses:
-        '200':
+        "200":
           description: Disciplines
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ClassDiscipline'
-        '500':
+                          $ref: "#/components/schemas/ClassDiscipline"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     post:
       tags: [Classes]
       summary: Create a class discipline
@@ -1012,25 +1033,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ClassDiscipline'
+              $ref: "#/components/schemas/ClassDiscipline"
       responses:
-        '201':
+        "201":
           description: Discipline created
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/ClassDiscipline'
-        '500':
+                        $ref: "#/components/schemas/ClassDiscipline"
+        "500":
           description: Creation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/classes/disciplines/{id}:
     parameters:
       - in: path
@@ -1049,31 +1070,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ClassDiscipline'
+              $ref: "#/components/schemas/ClassDiscipline"
       responses:
-        '200':
+        "200":
           description: Discipline updated
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/ClassDiscipline'
-        '404':
+                        $ref: "#/components/schemas/ClassDiscipline"
+        "404":
           description: Discipline not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Update error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     delete:
       tags: [Classes]
       summary: Delete a class discipline
@@ -1081,13 +1102,13 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Discipline deleted
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
@@ -1095,43 +1116,43 @@ paths:
                         properties:
                           success:
                             type: boolean
-        '404':
+        "404":
           description: Discipline not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Deletion error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/classes/templates:
     get:
       tags: [Classes]
       summary: List class templates
       operationId: listClassTemplates
       responses:
-        '200':
+        "200":
           description: Class templates
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ClassTemplate'
-        '500':
+                          $ref: "#/components/schemas/ClassTemplate"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     post:
       tags: [Classes]
       summary: Create a class template
@@ -1143,25 +1164,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ClassTemplate'
+              $ref: "#/components/schemas/ClassTemplate"
       responses:
-        '201':
+        "201":
           description: Template created
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/ClassTemplate'
-        '500':
+                        $ref: "#/components/schemas/ClassTemplate"
+        "500":
           description: Creation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/classes/templates/discipline/{disciplineId}:
     get:
       tags: [Classes]
@@ -1174,25 +1195,25 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Class templates for a discipline
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ClassTemplate'
-        '500':
+                          $ref: "#/components/schemas/ClassTemplate"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/classes/templates/{slug}:
     get:
       tags: [Classes]
@@ -1205,29 +1226,29 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Class template
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/ClassTemplate'
-        '404':
+                        $ref: "#/components/schemas/ClassTemplate"
+        "404":
           description: Class template not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/classes/templates/{id}:
     put:
       tags: [Classes]
@@ -1246,31 +1267,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ClassTemplate'
+              $ref: "#/components/schemas/ClassTemplate"
       responses:
-        '200':
+        "200":
           description: Template updated
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/ClassTemplate'
-        '404':
+                        $ref: "#/components/schemas/ClassTemplate"
+        "404":
           description: Class template not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Update error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     delete:
       tags: [Classes]
       summary: Delete a class template
@@ -1284,13 +1305,13 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Template deleted
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
@@ -1298,18 +1319,18 @@ paths:
                         properties:
                           success:
                             type: boolean
-        '404':
+        "404":
           description: Class template not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Deletion error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/coaches:
     get:
       tags: [Coaches]
@@ -1321,25 +1342,25 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Coaches
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Coach'
-        '500':
+                          $ref: "#/components/schemas/Coach"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     post:
       tags: [Coaches]
       summary: Create a coach profile
@@ -1351,50 +1372,50 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Coach'
+              $ref: "#/components/schemas/Coach"
       responses:
-        '201':
+        "201":
           description: Coach created
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Coach'
-        '500':
+                        $ref: "#/components/schemas/Coach"
+        "500":
           description: Creation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/coaches/booked-sessions:
     get:
       tags: [Coaches]
       summary: List non-private booked sessions for all coaches
       operationId: getAllCoachBookedSessions
       responses:
-        '200':
+        "200":
           description: Non-private booked sessions grouped by coach
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/CoachPublicBookedSessions'
-        '500':
+                          $ref: "#/components/schemas/CoachPublicBookedSessions"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/coaches/{id}:
     parameters:
       - in: path
@@ -1407,29 +1428,29 @@ paths:
       summary: Get coach details
       operationId: getCoach
       responses:
-        '200':
+        "200":
           description: Coach details
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Coach'
-        '404':
+                        $ref: "#/components/schemas/Coach"
+        "404":
           description: Coach not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     put:
       tags: [Coaches]
       summary: Update a coach profile
@@ -1441,31 +1462,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Coach'
+              $ref: "#/components/schemas/Coach"
       responses:
-        '200':
+        "200":
           description: Coach updated
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Coach'
-        '404':
+                        $ref: "#/components/schemas/Coach"
+        "404":
           description: Coach not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Update error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     delete:
       tags: [Coaches]
       summary: Delete a coach profile
@@ -1473,13 +1494,13 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Coach deleted
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
@@ -1487,18 +1508,18 @@ paths:
                         properties:
                           success:
                             type: boolean
-        '404':
+        "404":
           description: Coach not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Deletion error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/coaches/{id}/booked-sessions:
     get:
       tags: [Coaches]
@@ -1511,31 +1532,31 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Booked sessions
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/BookedSession'
-        '404':
+                          $ref: "#/components/schemas/BookedSession"
+        "404":
           description: Coach not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     post:
       tags: [Coaches]
       summary: Add a booked session for a coach
@@ -1551,56 +1572,56 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookedSession'
+              $ref: "#/components/schemas/BookedSession"
       responses:
-        '201':
+        "201":
           description: Booked session created
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/BookedSession'
-        '404':
+                        $ref: "#/components/schemas/BookedSession"
+        "404":
           description: Coach not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Creation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/membership-plans:
     get:
       tags: [Membership]
       summary: List membership plans
       operationId: listMembershipPlans
       responses:
-        '200':
+        "200":
           description: Membership plans
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/MembershipPlan'
-        '500':
+                          $ref: "#/components/schemas/MembershipPlan"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     post:
       tags: [Membership]
       summary: Create a membership plan
@@ -1612,25 +1633,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MembershipPlan'
+              $ref: "#/components/schemas/MembershipPlan"
       responses:
-        '201':
+        "201":
           description: Plan created
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/MembershipPlan'
-        '500':
+                        $ref: "#/components/schemas/MembershipPlan"
+        "500":
           description: Creation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/membership-plans/{id}:
     parameters:
       - in: path
@@ -1643,29 +1664,29 @@ paths:
       summary: Get membership plan details
       operationId: getMembershipPlan
       responses:
-        '200':
+        "200":
           description: Membership plan
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/MembershipPlan'
-        '404':
+                        $ref: "#/components/schemas/MembershipPlan"
+        "404":
           description: Plan not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     put:
       tags: [Membership]
       summary: Update a membership plan
@@ -1677,31 +1698,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MembershipPlan'
+              $ref: "#/components/schemas/MembershipPlan"
       responses:
-        '200':
+        "200":
           description: Plan updated
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/MembershipPlan'
-        '404':
+                        $ref: "#/components/schemas/MembershipPlan"
+        "404":
           description: Plan not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Update error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     delete:
       tags: [Membership]
       summary: Delete a membership plan
@@ -1709,54 +1730,54 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Plan deleted
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/MembershipPlan'
-        '404':
+                        $ref: "#/components/schemas/MembershipPlan"
+        "404":
           description: Plan not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Deletion error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/shop/categories:
     get:
       tags: [Shop]
       summary: List product categories
       operationId: listShopCategories
       responses:
-        '200':
+        "200":
           description: Categories
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ProductCategory'
-        '500':
+                          $ref: "#/components/schemas/ProductCategory"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/shop/products:
     get:
       tags: [Shop]
@@ -1791,27 +1812,27 @@ paths:
             type: integer
             default: 12
       responses:
-        '200':
+        "200":
           description: Paginated products
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Product'
+                          $ref: "#/components/schemas/Product"
                       meta:
-                        $ref: '#/components/schemas/PaginationMeta'
-        '500':
+                        $ref: "#/components/schemas/PaginationMeta"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     post:
       tags: [Shop]
       summary: Create a product
@@ -1823,25 +1844,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: "#/components/schemas/Product"
       responses:
-        '201':
+        "201":
           description: Product created
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Product'
-        '500':
+                        $ref: "#/components/schemas/Product"
+        "500":
           description: Creation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/shop/products/{id}:
     parameters:
       - in: path
@@ -1854,29 +1875,29 @@ paths:
       summary: Get product details
       operationId: getProduct
       responses:
-        '200':
+        "200":
           description: Product details
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Product'
-        '404':
+                        $ref: "#/components/schemas/Product"
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     put:
       tags: [Shop]
       summary: Update a product
@@ -1888,31 +1909,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: "#/components/schemas/Product"
       responses:
-        '200':
+        "200":
           description: Product updated
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Product'
-        '404':
+                        $ref: "#/components/schemas/Product"
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Update error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     delete:
       tags: [Shop]
       summary: Soft-delete a product
@@ -1920,13 +1941,13 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Product deleted
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
@@ -1934,18 +1955,18 @@ paths:
                         properties:
                           success:
                             type: boolean
-        '404':
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Deletion error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/shop/cart:
     post:
       tags: [Shop]
@@ -1978,36 +1999,36 @@ paths:
                         type: integer
                         minimum: 1
       responses:
-        '200':
+        "200":
           description: Calculated cart summary
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Cart'
-        '400':
+                        $ref: "#/components/schemas/Cart"
+        "400":
           description: Invalid payload
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/shop/whatsapp-config:
     get:
       tags: [Shop]
       summary: Retrieve WhatsApp ordering configuration
       operationId: getWhatsappConfig
       responses:
-        '200':
+        "200":
           description: WhatsApp configuration
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
@@ -2023,25 +2044,25 @@ paths:
       summary: List orders
       operationId: listOrders
       responses:
-        '200':
+        "200":
           description: Orders
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Order'
-        '500':
+                          $ref: "#/components/schemas/Order"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     post:
       tags: [Orders]
       summary: Create an order
@@ -2051,31 +2072,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrderInput'
+              $ref: "#/components/schemas/OrderInput"
       responses:
-        '201':
+        "201":
           description: Order created
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Order'
-        '400':
+                        $ref: "#/components/schemas/Order"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Creation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/orders/{orderId}:
     parameters:
       - in: path
@@ -2088,29 +2109,29 @@ paths:
       summary: Get an order
       operationId: getOrder
       responses:
-        '200':
+        "200":
           description: Order details
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Order'
-        '404':
+                        $ref: "#/components/schemas/Order"
+        "404":
           description: Order not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Retrieval error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     put:
       tags: [Orders]
       summary: Update an order
@@ -2120,49 +2141,49 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrderInput'
+              $ref: "#/components/schemas/OrderInput"
       responses:
-        '200':
+        "200":
           description: Updated order
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Order'
-        '400':
+                        $ref: "#/components/schemas/Order"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Order not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Update error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
     delete:
       tags: [Orders]
       summary: Delete an order
       operationId: deleteOrder
       responses:
-        '200':
+        "200":
           description: Order deleted
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
@@ -2170,48 +2191,48 @@ paths:
                         properties:
                           success:
                             type: boolean
-        '404':
+        "404":
           description: Order not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Deletion error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
   /api/me:
     get:
       tags: [User]
       summary: Get the authenticated user's profile
       operationId: getCurrentUser
       responses:
-        '200':
+        "200":
           description: Current user profile
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/User'
+                        $ref: "#/components/schemas/User"
   /api/me/bookings:
     get:
       tags: [User]
       summary: List bookings for the current user
       operationId: listUserBookings
       responses:
-        '200':
+        "200":
           description: User bookings
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
@@ -2262,16 +2283,16 @@ paths:
       summary: List orders for the current user
       operationId: listUserOrders
       responses:
-        '200':
+        "200":
           description: User orders
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
+                  - $ref: "#/components/schemas/ApiResponse"
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Order'
+                          $ref: "#/components/schemas/Order"

@@ -7,8 +7,13 @@ export interface IClassTemplate extends Document {
 	level: ClassLevel;
 	durationMin: number;
 	description: string;
-	gearNeeded: string[];
-	price?: number;
+	capacity: number;
+	prices?: {
+		dropIn?: number;
+		pack10?: number;
+		monthly?: number;
+		unlimited?: number;
+	};
 	prerequisites?: string[];
 	createdAt: Date;
 	updatedAt: Date;
@@ -30,7 +35,13 @@ const classTemplateSchema = new Schema<IClassTemplate>(
 		},
 		durationMin: { type: Number, required: true, min: 15 },
 		description: { type: String, required: true },
-		price: { type: Number, min: 0 },
+		capacity: { type: Number, required: true, default: 20 },
+		prices: {
+			dropIn: Number,
+			pack10: Number,
+			monthly: Number,
+			unlimited: Number,
+		},
 		coaches: [{ type: Schema.Types.ObjectId, ref: "Coach" }],
 		prerequisites: [{ type: String, trim: true }],
 	},
