@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/tiger-muay-thai';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://jaddoueik123_db_user:EMKiiBXSOAUrwEsP@cluster0.069gsmr.mongodb.net/tiger-site';
 
 export const connectDatabase = async (): Promise<void> => {
   try {

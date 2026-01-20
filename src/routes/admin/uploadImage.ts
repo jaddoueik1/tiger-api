@@ -168,7 +168,7 @@ export const registerAdminUploadImageRoute = (router: Router) => {
         data: {
           fileName: uniqueFileName,
           path: relativePath,
-          url: `/assets/uploaded-images/${uniqueFileName}`,
+          url: `${process.env.APP_URL || 'http://localhost:3001'}/assets/uploaded-images/${uniqueFileName}`,
         },
       };
 

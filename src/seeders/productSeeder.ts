@@ -1,5 +1,5 @@
-import { Product, ProductCategory } from '../models';
 import { categories, products } from '../data/products';
+import { Product, ProductCategory } from '../models';
 
 export const seedProducts = async (): Promise<void> => {
   try {
@@ -18,33 +18,35 @@ export const seedProducts = async (): Promise<void> => {
     const insertedCategories = await ProductCategory.insertMany(categoryData);
     console.log(`✅ Seeded ${insertedCategories.length} product categories`);
     
-    // Create category mapping
-    const categoryMap = new Map(insertedCategories.map(c => [c.slug, c._id]));
-    const categoryIdMap: { [oldId: string]: any } = {
-      '1': categoryMap.get('gi-uniforms'),
-      '2': categoryMap.get('gloves-protection'),
-      '3': categoryMap.get('apparel'),
-      '4': categoryMap.get('accessories'),
-      '5': categoryMap.get('supplements'),
-    };
-    
+    // Map old category IDs to new MongoDB _id values
+    const idToSlug = new Map(categories.map(cat => [cat.id, cat.slug]));
+    const slugToId = new Map(insertedCategories.map(cat => [cat.slug, cat._id]));
+
     // Transform products
-    const productData = products.map(product => ({
-      sku: product.sku,
-      title: product.title,
-      description: product.description,
-      categoryId: categoryIdMap[product.categoryId],
-      images: product.images,
-      variants: product.variants,
-      price: product.price,
-      compareAtPrice: product.compareAtPrice,
-      stock: product.stock,
-      attributes: product.attributes,
-      isActive: product.isActive
-    })).filter(p => p.categoryId); // Only include products with valid category
-    
+    const productData = products
+      .map(product => {
+        const slug = idToSlug.get(product.categoryId);
+        if (!slug) return null;
+        const categoryId = slugToId.get(slug);
+        if (!categoryId) return null;
+        return {
+          sku: product.sku,
+          title: product.title,
+          description: product.description,
+          categoryId,
+          images: product.images,
+          variants: product.variants,
+          price: product.price,
+          compareAtPrice: product.compareAtPrice,
+          stock: product.stock,
+          attributes: product.attributes,
+          isActive: product.isActive
+        };
+      })
+      .filter(p => p); // Only include products with valid category
+
     await Product.insertMany(productData);
-    
+
     console.log(`✅ Seeded ${productData.length} products`);
   } catch (error) {
     console.error('❌ Error seeding products:', error);

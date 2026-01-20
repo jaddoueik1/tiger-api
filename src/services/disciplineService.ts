@@ -73,9 +73,9 @@ export class DisciplineService {
 		return ClassTemplate.findOne({ slug }).populate("disciplineId");
 	}
 
-    static async getClassTemplateById(id: string) {
-        return ClassTemplate.findById(id).populate("disciplineId");
-    }
+	static async getClassTemplateById(id: string) {
+		return ClassTemplate.findById(id).populate("disciplineId");
+	}
 
 	static async updateClassTemplate(
 		id: string,
@@ -84,6 +84,7 @@ export class DisciplineService {
 			title: string;
 			level: string;
 			coaches: string[];
+			quizzes: string[];
 			durationMin: number;
 			description: string;
 			price?: number;

@@ -16,6 +16,7 @@ export enum UserRole {
 	MEMBER = "member",
 	COACH = "coach",
 	ADMIN = "admin",
+	STUDENT = "student",
 }
 
 export interface ClassDiscipline {

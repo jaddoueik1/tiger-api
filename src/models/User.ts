@@ -26,6 +26,8 @@ export interface IUser extends Document {
 	createdAt: Date;
 	updatedAt: Date;
 	championships?: string[];
+	forcePasswordChange?: boolean;
+	enrolledClassTemplates?: string[]; // ObjectIds
 }
 
 export interface IBookedSession {
@@ -34,12 +36,12 @@ export interface IBookedSession {
 	isPrivate?: boolean;
 	sessionDate: Date;
 	repetition: SessionRepetition;
-    mainInterest?: string;
-    goal?: string;
-    medicalInformation?: string;
-    dailyRoutine?: string;
-    physicalActivity?: string;
-    nutrition?: string;
+	mainInterest?: string;
+	goal?: string;
+	medicalInformation?: string;
+	dailyRoutine?: string;
+	physicalActivity?: string;
+	nutrition?: string;
 }
 
 export interface IMembership {
@@ -80,12 +82,12 @@ const bookedSessionSchema = new Schema<IBookedSession>(
 			required: true,
 			enum: Object.values(SessionRepetition),
 		},
-        mainInterest: { type: String },
-        goal: { type: String },
-        medicalInformation: { type: String },
-        dailyRoutine: { type: String },
-        physicalActivity: { type: String },
-        nutrition: { type: String }
+		mainInterest: { type: String },
+		goal: { type: String },
+		medicalInformation: { type: String },
+		dailyRoutine: { type: String },
+		physicalActivity: { type: String },
+		nutrition: { type: String },
 	},
 	{
 		_id: false,
@@ -141,6 +143,10 @@ const userSchema = new Schema<IUser>(
 		},
 		hourlyRate: { type: Number, min: 0 },
 		isActive: { type: Boolean, default: true },
+		forcePasswordChange: { type: Boolean, default: false },
+		enrolledClassTemplates: [
+			{ type: Schema.Types.ObjectId, ref: "ClassTemplate" },
+		],
 	},
 	{
 		timestamps: true,

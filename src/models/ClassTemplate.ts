@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { ClassLevel, Coach } from "../types";
+import { IQuiz } from "./Quiz";
 
 export interface IClassTemplate extends Document {
 	disciplineId: mongoose.Types.ObjectId;
@@ -18,6 +19,7 @@ export interface IClassTemplate extends Document {
 	createdAt: Date;
 	updatedAt: Date;
 	coaches: Coach[];
+	quizzes: IQuiz[];
 }
 
 const classTemplateSchema = new Schema<IClassTemplate>(
@@ -43,6 +45,7 @@ const classTemplateSchema = new Schema<IClassTemplate>(
 			unlimited: Number,
 		},
 		coaches: [{ type: Schema.Types.ObjectId, ref: "Coach" }],
+		quizzes: [{ type: Schema.Types.ObjectId, ref: "Quiz" }],
 		prerequisites: [{ type: String, trim: true }],
 	},
 	{

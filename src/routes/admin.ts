@@ -4,9 +4,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { requireAdmin } from "../middleware/requireAdmin";
 import { ContentService } from "../services/contentService";
+import { DisciplineService } from "../services/disciplineService";
 import { ProductService } from "../services/productService";
 import { ApiResponse } from "../types";
-import { DisciplineService } from "../services/disciplineService";
 import { registerAdminUploadImageRoute } from "./admin/uploadImage";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -188,7 +188,7 @@ router.post("/upload-image", async (req, res) => {
 			data: {
 				fileName: uniqueFileName,
 				path: relativePath,
-				url: `/assets/uploaded-images/${uniqueFileName}`,
+				url: `${SERVER_URL}/assets/uploaded-images/${uniqueFileName}`,
 			},
 		};
 
@@ -203,12 +203,29 @@ router.post("/upload-image", async (req, res) => {
 });
 
 const ensureUploadDirectory = async () => {
-    try {
-        await fs.mkdir(UPLOAD_DIR, { recursive: true });
-    } catch (error) {
-        console.error("Failed to create upload directory", error);
-        throw error;
-    }
+	try {
+		await fs.mkdir(UPLOAD_DIR, { recursive: true });
+	} catch (error) {
+		console.error("Failed to create upload directory", error);
+		throw error;
+	}
+};
+
+const getUniqueFileName = async (sanitizedName: string): Promise<string> => {
+	let name = sanitizedName;
+	let counter = 1;
+
+	while (true) {
+		try {
+			await fs.access(path.join(UPLOAD_DIR, name));
+			const ext = path.extname(sanitizedName);
+			const base = path.basename(sanitizedName, ext);
+			name = `${base}-${counter}${ext}`;
+			counter++;
+		} catch {
+			return name;
+		}
+	}
 };
 
 router.get("/images", async (req, res) => {
@@ -234,38 +251,36 @@ router.get("/images", async (req, res) => {
 	}
 });
 
-
 router.delete("/images/:fileName", async (req, res) => {
-    const { fileName } = req.params;
-    if (!fileName) {
-        return res.status(400).json({
-            error: "Bad Request",
-            message: "fileName parameter is required",
-        });
-    }
-    const sanitizedFileName = sanitizeFileName(fileName);
-    const filePath = path.join(UPLOAD_DIR, sanitizedFileName);
-    try {
-        await fs.unlink(filePath);
-        res.json({ message: "Image deleted successfully" });
-    } catch (error) {
-        console.error("Failed to delete image", error);
-        if (error.code === 'ENOENT') {
-            return res.status(404).json({
-                error: "Not Found",
-                message: "Image not found",
-
-            });
-        }
-        res.status(500).json({
-            error: "Internal Server Error",
-            message: "Failed to delete image",
-        });
-    }
+	const { fileName } = req.params;
+	if (!fileName) {
+		return res.status(400).json({
+			error: "Bad Request",
+			message: "fileName parameter is required",
+		});
+	}
+	const sanitizedFileName = sanitizeFileName(fileName);
+	const filePath = path.join(UPLOAD_DIR, sanitizedFileName);
+	try {
+		await fs.unlink(filePath);
+		res.json({ message: "Image deleted successfully" });
+	} catch (error) {
+		console.error("Failed to delete image", error);
+		if (error.code === "ENOENT") {
+			return res.status(404).json({
+				error: "Not Found",
+				message: "Image not found",
+			});
+		}
+		res.status(500).json({
+			error: "Internal Server Error",
+			message: "Failed to delete image",
+		});
+	}
 });
 
 const sanitizeFileName = (fileName: string) => {
-    return fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+	return fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
 };
 
 export { router as adminRoutes };

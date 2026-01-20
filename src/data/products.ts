@@ -7421,7 +7421,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 90.0,
-		stock: -1.0,
+    stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7443,7 +7443,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 25.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7465,7 +7465,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 25.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7487,7 +7487,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 25.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7509,7 +7509,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 25.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7531,7 +7531,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 125.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7553,7 +7553,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 125.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7575,7 +7575,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 130.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7597,7 +7597,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 130.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7619,7 +7619,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 25.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7641,7 +7641,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 30.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7663,7 +7663,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 125.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7685,7 +7685,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 130.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7707,7 +7707,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 35.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7729,7 +7729,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 140.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7751,7 +7751,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 130.0,
-		stock: -1.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
@@ -7773,7 +7773,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 25.0,
-		stock: -2.0,
+		stock: 0,
 		attributes: [
 			{
 				key: "uom",
@@ -7795,7 +7795,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 125.0,
-		stock: -2.0,
+		stock: 0,
 		attributes: [
 			{
 				key: "uom",
@@ -7817,7 +7817,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 50.0,
-		stock: -2.0,
+		stock: 0,
 		attributes: [
 			{
 				key: "uom",
@@ -7839,7 +7839,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 15.0,
-		stock: -3.0,
+		stock: 0,
 		attributes: [
 			{
 				key: "uom",
@@ -7861,7 +7861,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 25.0,
-		stock: -3.0,
+		stock: 0,
 		attributes: [
 			{
 				key: "uom",
@@ -7883,7 +7883,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 125.0,
-		stock: -3.0,
+		stock: 0,
 		attributes: [
 			{
 				key: "uom",
@@ -7905,7 +7905,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 30.0,
-		stock: -3.0,
+		stock: 0,
 		attributes: [
 			{
 				key: "uom",
@@ -7927,7 +7927,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 130.0,
-		stock: -3.0,
+		stock: 0,
 		attributes: [
 			{
 				key: "uom",
@@ -7949,7 +7949,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 25.0,
-		stock: -4.0,
+		stock: 0,
 		attributes: [
 			{
 				key: "uom",
@@ -7971,7 +7971,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 35.0,
-		stock: -4.0,
+		stock: 0,
 		attributes: [
 			{
 				key: "uom",
@@ -7993,7 +7993,7 @@ export const products: Product[] = [
 		images: [],
 		variants: [],
 		price: 30.0,
-		stock: -13.0,
+		stock: 0.0,
 		attributes: [
 			{
 				key: "uom",
