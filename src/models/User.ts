@@ -28,6 +28,7 @@ export interface IUser extends Document {
 	championships?: string[];
 	forcePasswordChange?: boolean;
 	enrolledClassTemplates?: string[]; // ObjectIds
+	monthlyEarnings?: number;
 }
 
 export interface IBookedSession {
@@ -42,6 +43,10 @@ export interface IBookedSession {
 	dailyRoutine?: string;
 	physicalActivity?: string;
 	nutrition?: string;
+	cancelledDates?: Date[];
+	recurrenceEndDate?: Date;
+	selectedDays?: number[];
+	_id?: string;
 }
 
 export interface IMembership {
@@ -88,10 +93,13 @@ const bookedSessionSchema = new Schema<IBookedSession>(
 		dailyRoutine: { type: String },
 		physicalActivity: { type: String },
 		nutrition: { type: String },
+		cancelledDates: [{ type: Date }],
+		recurrenceEndDate: { type: Date },
+		selectedDays: [{ type: Number }], // 0=Sun, 1=Mon, ..., 6=Sat
 	},
 	{
-		_id: false,
-	}
+		timestamps: true,
+	},
 );
 
 bookedSessionSchema.pre("validate", function (next) {
@@ -101,7 +109,7 @@ bookedSessionSchema.pre("validate", function (next) {
 	if (!session.templateId && !session.name) {
 		session.invalidate(
 			"templateId",
-			"Either templateId or name must be provided"
+			"Either templateId or name must be provided",
 		);
 		session.invalidate("name", "Either templateId or name must be provided");
 	}
@@ -147,10 +155,11 @@ const userSchema = new Schema<IUser>(
 		enrolledClassTemplates: [
 			{ type: Schema.Types.ObjectId, ref: "ClassTemplate" },
 		],
+		monthlyEarnings: { type: Number, default: 0 },
 	},
 	{
 		timestamps: true,
-	}
+	},
 );
 
 // Indexes

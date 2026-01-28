@@ -12,6 +12,7 @@ import { authRoutes } from "./routes/auth";
 import { classRoutes } from "./routes/classes";
 import { coachRoutes } from "./routes/coaches";
 import { contentRoutes } from "./routes/content";
+import { cronRoutes } from "./routes/cron";
 import { evaluationRoutes } from "./routes/evaluations";
 import { membershipPlanRoutes } from "./routes/membership-plans";
 import { newsRoutes } from "./routes/news";
@@ -36,7 +37,7 @@ connectDatabase();
 app.use(
 	helmet({
 		crossOriginResourcePolicy: false,
-	})
+	}),
 );
 const STATIC_DIR = path.resolve(__dirname, "public");
 const ASSETS_DIR = path.resolve(__dirname, "../assets");
@@ -51,7 +52,7 @@ app.use(
 	cors({
 		origin: "*",
 		credentials: true,
-	})
+	}),
 );
 
 app.use(
@@ -59,7 +60,7 @@ app.use(
 	express.static(STATIC_DIR, {
 		maxAge: "1d",
 		etag: true,
-	})
+	}),
 );
 
 app.use(
@@ -67,7 +68,7 @@ app.use(
 	express.static(ASSETS_DIR, {
 		maxAge: "1d",
 		etag: true,
-	})
+	}),
 );
 
 // Body parsing middleware
@@ -104,6 +105,7 @@ app.use("/api/quizzes", quizRoutes);
 app.use("/api/quizzes", quizRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/evaluations", evaluationRoutes);
+app.use("/api/cron", cronRoutes);
 // app.use("/api/admin/prospects", ... ) is handled inside prospectRoutes (it defines /admin/prospects paths)
 // Actually, since I defined the routes as /admin/prospects INSIDE the router, I should mount it at /api/prospects only if I change the internal paths.
 // Let's re-read the route file.
@@ -125,7 +127,7 @@ app.use(
 		err: any,
 		req: express.Request,
 		res: express.Response,
-		next: express.NextFunction
+		next: express.NextFunction,
 	) => {
 		console.error(err.stack);
 		res.status(500).json({
@@ -135,7 +137,7 @@ app.use(
 					? err.message
 					: "Something went wrong",
 		});
-	}
+	},
 );
 
 app.listen(PORT, () => {

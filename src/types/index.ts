@@ -69,6 +69,7 @@ export interface ClassSession {
 
 export enum SessionStatus {
 	SCHEDULED = "scheduled",
+	PENDING = "pending",
 	CANCELLED = "cancelled",
 	FULL = "full",
 	IN_PROGRESS = "in_progress",

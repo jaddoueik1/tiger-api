@@ -84,7 +84,7 @@ router.get(
 		try {
 			const bookedSessions = await CoachService.getCoachesBookedSessionsInRange(
 				new Date(startDate as string),
-				new Date(endDate as string)
+				new Date(endDate as string),
 			);
 
 			const response: ApiResponse<any> = {
@@ -99,7 +99,7 @@ router.get(
 				message: "Failed to fetch booked sessions in range",
 			});
 		}
-	}
+	},
 );
 
 // GET /api/coaches/:id
@@ -219,6 +219,121 @@ router.post("/:id/booked-sessions", async (req, res) => {
 		res.status(500).json({
 			error: "Internal Server Error",
 			message: "Failed to add booked session",
+		});
+	}
+});
+
+// POST /api/coaches/:id/sessions/:sessionId/cancel
+router.post(
+	"/:id/sessions/:sessionId/cancel",
+	requireAdmin,
+	async (req, res) => {
+		const { id, sessionId } = req.params;
+		const { date } = req.body; // Expect ISO string
+
+		if (!date) {
+			return res.status(400).json({
+				error: "Bad Request",
+				message: "Date is required",
+			});
+		}
+
+		try {
+			await CoachService.cancelSessionInstance(id, sessionId, new Date(date));
+			res.json({
+				data: { success: true, message: "Session instance cancelled" },
+			});
+		} catch (error) {
+			console.error("Error cancelling session instance:", error);
+			if (error instanceof Error && error.message.includes("not found")) {
+				return res.status(404).json({
+					error: "Not Found",
+					message: error.message,
+				});
+			}
+			res.status(500).json({
+				error: "Internal Server Error",
+				message: "Failed to cancel session instance",
+			});
+		}
+	},
+);
+
+// GET /api/coaches/:id/schedules/:scheduleId/instances
+router.get(
+	"/:id/schedules/:scheduleId/instances",
+	requireAdmin,
+	async (req, res) => {
+		const { id, scheduleId } = req.params;
+		try {
+			const sessions = await CoachService.getSessionsBySchedule(id, scheduleId);
+			const response: ApiResponse<any[]> = { data: sessions };
+			res.json(response);
+		} catch (error) {
+			console.error("Error fetching session instances:", error);
+			res.status(500).json({
+				error: "Internal Server Error",
+				message: "Failed to fetch session instances",
+			});
+		}
+	},
+);
+
+// DELETE /api/coaches/:id/booked-sessions/:sessionId
+router.delete(
+	"/:id/booked-sessions/:sessionId",
+	requireAdmin,
+	async (req, res) => {
+		const { id, sessionId } = req.params;
+		try {
+			await CoachService.deleteBookedSession(id, sessionId);
+			const response: ApiResponse<any> = { data: { success: true } };
+			res.json(response);
+		} catch (error) {
+			console.error("Error deleting booked session:", error);
+			if (error instanceof Error && error.message === "Coach not found") {
+				return res.status(404).json({
+					error: "Coach Not Found",
+					message: `Coach with id "${id}" not found`,
+				});
+			}
+			res.status(500).json({
+				error: "Internal Server Error",
+				message: "Failed to delete booked session",
+			});
+		}
+	},
+);
+
+// GET /api/coaches/:id/sessions
+router.get("/:id/sessions", async (req, res) => {
+	const { id } = req.params;
+	const { startDate, endDate } = req.query;
+
+	if (!startDate || !endDate) {
+		return res.status(400).json({
+			error: "Bad Request",
+			message: "startDate and endDate are required parameters",
+		});
+	}
+
+	try {
+		const sessions = await CoachService.getCoachSessionsInRange(
+			id,
+			new Date(startDate as string),
+			new Date(endDate as string),
+		);
+
+		const response: ApiResponse<any> = {
+			data: sessions,
+		};
+
+		res.json(response);
+	} catch (error) {
+		console.error("Error fetching coach sessions in range:", error);
+		res.status(500).json({
+			error: "Internal Server Error",
+			message: "Failed to fetch coach sessions in range",
 		});
 	}
 });

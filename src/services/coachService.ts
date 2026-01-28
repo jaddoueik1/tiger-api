@@ -1,7 +1,8 @@
 import bcrypt from "bcryptjs";
+import { addDays, addMonths, addWeeks, isBefore } from "date-fns";
 import { Types } from "mongoose";
-import { IBookedSession, ICoach, User } from "../models";
-import { UserRole } from "../types";
+import { IBookedSession, ICoach, ISession, Session, User } from "../models";
+import { SessionRepetition, SessionStatus, UserRole } from "../types";
 
 export class CoachService {
 	static async getAllCoaches(specialty?: string): Promise<ICoach[]> {
@@ -27,7 +28,7 @@ export class CoachService {
 
 	static async updateCoach(
 		id: string,
-		data: Partial<ICoach>
+		data: Partial<ICoach>,
 	): Promise<ICoach | null> {
 		return User.findOneAndUpdate({ _id: id, roles: UserRole.COACH }, data, {
 			new: true,
@@ -38,7 +39,7 @@ export class CoachService {
 		return User.findOneAndUpdate(
 			{ _id: id, roles: UserRole.COACH },
 			{ isActive: false },
-			{ new: true }
+			{ new: true },
 		);
 	}
 
@@ -54,17 +55,147 @@ export class CoachService {
 
 	static async addBookedSession(
 		coachId: string,
-		session: IBookedSession
+		session: IBookedSession,
 	): Promise<IBookedSession> {
+		// This method is now a wrapper for creating a schedule and generating instances
 		const coach = await CoachService.getCoachById(coachId);
 		if (!coach) {
 			throw new Error("Coach not found");
 		}
 
+		// Generate an ID for the schedule if not present (to link instances)
+		if (!session._id) {
+			session._id = new Types.ObjectId().toString();
+		}
+
 		coach.bookedSessions = coach.bookedSessions || [];
 		coach.bookedSessions.push(session);
 		await coach.save();
+
+		// Generate instances
+		await CoachService.generateSessionInstances(session, coachId);
+
 		return session;
+	}
+
+	static async generateSessionInstances(
+		schedule: IBookedSession,
+		coachId: string,
+	): Promise<void> {
+		const startDate = new Date(schedule.sessionDate);
+		// Default recurrence end date if not provided: 3 months from now
+		const endDate = schedule.recurrenceEndDate
+			? new Date(schedule.recurrenceEndDate)
+			: addMonths(new Date(), 3);
+
+		const sessionsToCreate: Partial<ISession>[] = [];
+
+		let currentDate = startDate;
+
+		// Note: 'none' check handled by initial loop condition or explicit logic.
+		// Assuming undefined repetition means single instance.
+
+		if (!schedule.repetition || (schedule.repetition as string) === "none") {
+			sessionsToCreate.push({
+				coachId,
+				templateId: schedule.templateId,
+				scheduleId: schedule._id,
+				name: schedule.name,
+				repetition: "none",
+				startDateTime: startDate,
+				endDateTime: new Date(startDate.getTime() + 60 * 60 * 1000), // Default 1 hour duration
+				status: SessionStatus.PENDING,
+				isPrivate: schedule.isPrivate || false,
+				details: {
+					mainInterest: schedule.mainInterest,
+					goal: schedule.goal,
+					medicalInformation: schedule.medicalInformation,
+					dailyRoutine: schedule.dailyRoutine,
+					physicalActivity: schedule.physicalActivity,
+					nutrition: schedule.nutrition,
+				},
+			});
+		} else {
+			while (
+				isBefore(currentDate, endDate) ||
+				currentDate.getTime() === endDate.getTime()
+			) {
+				// Check if we should generate for this day
+				let shouldCreate = true;
+				if (
+					schedule.repetition === SessionRepetition.WEEKLY &&
+					schedule.selectedDays &&
+					schedule.selectedDays.length > 0
+				) {
+					if (!schedule.selectedDays.includes(currentDate.getDay())) {
+						shouldCreate = false;
+					}
+				}
+
+				if (shouldCreate) {
+					sessionsToCreate.push({
+						coachId,
+						templateId: schedule.templateId,
+						scheduleId: schedule._id,
+						name: schedule.name,
+						repetition: schedule.repetition,
+						startDateTime: new Date(currentDate),
+						endDateTime: new Date(currentDate.getTime() + 60 * 60 * 1000), // Default 1 hour
+						status: SessionStatus.PENDING,
+						isPrivate: schedule.isPrivate || false,
+						details: {
+							mainInterest: schedule.mainInterest,
+							goal: schedule.goal,
+							medicalInformation: schedule.medicalInformation,
+							dailyRoutine: schedule.dailyRoutine,
+							physicalActivity: schedule.physicalActivity,
+							nutrition: schedule.nutrition,
+						},
+					});
+				}
+
+				if (schedule.repetition === SessionRepetition.DAILY) {
+					currentDate = addDays(currentDate, 1);
+				} else if (schedule.repetition === SessionRepetition.WEEKLY) {
+					// If selectedDays is used, we must increment by 1 day to check the next potential day
+					if (schedule.selectedDays && schedule.selectedDays.length > 0) {
+						currentDate = addDays(currentDate, 1);
+					} else {
+						currentDate = addWeeks(currentDate, 1);
+					}
+				} else if (schedule.repetition === SessionRepetition.MONTHLY) {
+					currentDate = addMonths(currentDate, 1);
+				} else {
+					break; // Unknown recurrence
+				}
+			}
+		}
+
+		if (sessionsToCreate.length > 0) {
+			await Session.insertMany(sessionsToCreate);
+		}
+	}
+
+	static async cancelSessionInstance(
+		coachId: string,
+		sessionId: string,
+		date: Date, // Kept for method compatibility, but unused if sessionId refers to actual Session doc
+	): Promise<void> {
+		// Try finding by ID first (new logic)
+		let session = await Session.findOne({ _id: sessionId, coachId });
+
+		if (!session) {
+			// If not found by ID, it implies either invalid ID or migration issue.
+			// We can try to match by date/coach if strictly necessary, but ideally frontend sends correct ID.
+			// Given "Revamp" task, we assume frontend will be updated to send Session ID.
+			throw new Error("Session instance not found");
+		}
+
+		if (session) {
+			session.status = SessionStatus.CANCELLED;
+			await session.save();
+			return;
+		}
 	}
 
 	static async getAllCoachesPublicBookedSessions(): Promise<
@@ -74,163 +205,156 @@ export class CoachService {
 			bookedSessions: IBookedSession[];
 		}>
 	> {
-		const coaches = await User.find(
-			{ roles: UserRole.COACH },
-			{ name: 1, bookedSessions: 1 }
-		).lean<
-			Array<{
-				_id: Types.ObjectId;
-				name: string;
-				bookedSessions?: IBookedSession[];
-			}>
-		>();
+		// This needs to aggregate from Sessions now.
+		const sessions = await Session.find({
+			status: { $ne: SessionStatus.CANCELLED },
+			isPrivate: false,
+			startDateTime: { $gte: new Date() }, // Future sessions only for public view? Or allow past?
+			// Usually public schedule shows upcoming. I'll stick to future for optimization.
+		}).sort({ startDateTime: 1 });
 
-		return coaches.map((coach) => ({
-			coachId: coach._id.toString(),
-			coachName: coach.name,
-			bookedSessions: (coach.bookedSessions ?? []).filter(
-				(session) => !session?.isPrivate
-			),
-		}));
+		// Group by coach
+		const coachesMap = new Map<string, any[]>();
+
+		const coachIds = [...new Set(sessions.map((s) => s.coachId))];
+		const coaches = await User.find({ _id: { $in: coachIds } }, { name: 1 });
+		const coachNameMap = new Map(
+			coaches.map((c) => [c._id.toString(), c.name]),
+		);
+
+		for (const s of sessions) {
+			const cId = s.coachId;
+			if (!coachesMap.has(cId)) {
+				coachesMap.set(cId, []);
+			}
+
+			coachesMap.get(cId)?.push({
+				_id: s._id.toString(),
+				name: s.name,
+				sessionDate: s.startDateTime, // Map startDateTime to sessionDate
+				repetition: (s.repetition as any) || "none",
+				templateId: s.templateId,
+				isPrivate: s.isPrivate,
+			});
+		}
+
+		return Array.from(coachesMap.entries()).map(
+			([coachId, bookedSessions]) => ({
+				coachId,
+				coachName: coachNameMap.get(coachId) || "Unknown Coach",
+				bookedSessions,
+			}),
+		);
 	}
 
 	static async getCoachesBookedSessionsInRange(
 		startDate: Date,
-		endDate: Date
+		endDate: Date,
 	): Promise<Array<IBookedSession & { coach: { id: string; name: string } }>> {
-		const coaches = await User.find(
-			{ roles: UserRole.COACH },
-			{ name: 1, bookedSessions: 1 }
-		).lean<
-			Array<{
-				_id: Types.ObjectId;
-				name: string;
-				bookedSessions?: IBookedSession[];
-			}>
-		>();
+		return CoachService.querySessionsInRange(
+			startDate,
+			endDate,
+			undefined,
+			false,
+		);
+	}
 
-		const allSessions: Array<
-			IBookedSession & { coach: { id: string; name: string } }
-		> = [];
+	static async getCoachSessionsInRange(
+		coachId: string,
+		startDate: Date,
+		endDate: Date,
+	): Promise<Array<IBookedSession & { coach: { id: string; name: string } }>> {
+		return CoachService.querySessionsInRange(startDate, endDate, coachId, true);
+	}
 
-		for (const coach of coaches) {
-			const coachInfo = { id: coach._id.toString(), name: coach.name };
-			const bookedSessions = coach.bookedSessions ?? [];
+	private static async querySessionsInRange(
+		startDate: Date,
+		endDate: Date,
+		coachId?: string,
+		includePrivate: boolean = false,
+	) {
+		const query: any = {
+			startDateTime: { $gte: startDate, $lte: endDate },
+			status: { $ne: SessionStatus.CANCELLED }, // Hide cancelled
+		};
 
-			for (const session of bookedSessions) {
-				if (session.isPrivate) continue;
-
-				const sessionDate = new Date(session.sessionDate);
-				const repetition = (session.repetition as string) || "none";
-
-				if (repetition === "none") {
-					if (sessionDate >= startDate && sessionDate <= endDate) {
-						allSessions.push({ ...session, coach: coachInfo });
-					}
-				} else if (repetition === "daily") {
-					// Generate session for every day in range
-					const current = new Date(
-						Math.max(startDate.getTime(), sessionDate.getTime())
-					);
-					// Reset time part if needed? Assuming sessionDate has the time we want.
-					// We must keep the original time from sessionDate
-
-					// Iterate day by day from startDate to endDate
-					// If the day is >= sessionDate (checking just date part or full timestamp? context implies full timestamp for start)
-
-					let loopDate = new Date(startDate);
-					while (loopDate <= endDate) {
-						if (loopDate >= sessionDate) {
-							// Create a new date with loopDate's year/month/day and sessionDate's time
-							const newDate = new Date(loopDate);
-							newDate.setHours(
-								sessionDate.getHours(),
-								sessionDate.getMinutes(),
-								sessionDate.getSeconds(),
-								sessionDate.getMilliseconds()
-							);
-
-							// Double check if this newDate is actually within range and >= original start
-							if (
-								newDate >= startDate &&
-								newDate <= endDate &&
-								newDate >= sessionDate
-							) {
-								allSessions.push({
-									...session,
-									sessionDate: newDate,
-									coach: coachInfo,
-								});
-							}
-						}
-						loopDate.setDate(loopDate.getDate() + 1);
-					}
-				} else if (repetition === "weekly") {
-					// Generate for same day of week
-					const sessionDay = sessionDate.getDay();
-
-					let loopDate = new Date(startDate);
-					while (loopDate <= endDate) {
-						if (loopDate.getDay() === sessionDay) {
-							const newDate = new Date(loopDate);
-							newDate.setHours(
-								sessionDate.getHours(),
-								sessionDate.getMinutes(),
-								sessionDate.getSeconds(),
-								sessionDate.getMilliseconds()
-							);
-
-							if (
-								newDate >= startDate &&
-								newDate <= endDate &&
-								newDate >= sessionDate
-							) {
-								allSessions.push({
-									...session,
-									sessionDate: newDate,
-									coach: coachInfo,
-								});
-							}
-						}
-						loopDate.setDate(loopDate.getDate() + 1);
-					}
-				} else if (repetition === "monthly") {
-					// Generate for same day of month
-					const sessionDateNum = sessionDate.getDate();
-
-					let loopDate = new Date(startDate);
-					while (loopDate <= endDate) {
-						if (loopDate.getDate() === sessionDateNum) {
-							const newDate = new Date(loopDate);
-							newDate.setHours(
-								sessionDate.getHours(),
-								sessionDate.getMinutes(),
-								sessionDate.getSeconds(),
-								sessionDate.getMilliseconds()
-							);
-
-							if (
-								newDate >= startDate &&
-								newDate <= endDate &&
-								newDate >= sessionDate
-							) {
-								allSessions.push({
-									...session,
-									sessionDate: newDate,
-									coach: coachInfo,
-								});
-							}
-						}
-						loopDate.setDate(loopDate.getDate() + 1);
-					}
-				}
-			}
+		if (!includePrivate) {
+			query.isPrivate = false;
 		}
 
-		// Sort by date
-		return allSessions.sort(
-			(a, b) =>
-				new Date(a.sessionDate).getTime() - new Date(b.sessionDate).getTime()
+		if (coachId) {
+			query.coachId = coachId;
+		}
+
+		const sessions = await Session.find(query).sort({ startDateTime: 1 });
+
+		const coachIds = [...new Set(sessions.map((s) => s.coachId))];
+		const coaches = await User.find({ _id: { $in: coachIds } }, { name: 1 });
+		const coachNameMap = new Map(
+			coaches.map((c) => [c._id.toString(), c.name]),
 		);
+
+		return sessions.map(
+			(s) =>
+				({
+					_id: s._id.toString(), // The actual Session ID
+					name: s.name,
+					sessionDate: s.startDateTime,
+					repetition: (s.repetition as any) || "none",
+					templateId: s.templateId,
+					isPrivate: s.isPrivate,
+					coach: {
+						id: s.coachId,
+						name: coachNameMap.get(s.coachId) || "Unknown",
+					},
+				}) as any,
+		);
+	}
+
+	static async processPendingSessions() {
+		// Find PENDING sessions before 'now' (or 1 hour ago) and mark COMPLETED
+		const now = new Date();
+		const result = await Session.updateMany(
+			{
+				status: SessionStatus.PENDING,
+				endDateTime: { $lt: now },
+			},
+			{
+				$set: { status: SessionStatus.COMPLETED },
+			},
+		);
+		console.log(
+			`Processed ${result.modifiedCount} pending sessions to completed.`,
+		);
+	}
+
+	static async getSessionsBySchedule(
+		coachId: string,
+		scheduleId: string,
+	): Promise<ISession[]> {
+		return Session.find({ coachId, scheduleId }).sort({ startDateTime: 1 });
+	}
+
+	static async deleteBookedSession(
+		coachId: string,
+		scheduleId: string,
+	): Promise<void> {
+		const coach = await CoachService.getCoachById(coachId);
+		if (!coach) {
+			throw new Error("Coach not found");
+		}
+
+		if (coach.bookedSessions) {
+			coach.bookedSessions = coach.bookedSessions.filter(
+				(s) => s._id?.toString() !== scheduleId,
+			);
+			await coach.save();
+		}
+
+		// Delete future instances associated with this schedule
+		await Session.deleteMany({
+			scheduleId,
+			startDateTime: { $gte: new Date() },
+		});
 	}
 }
