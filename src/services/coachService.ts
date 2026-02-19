@@ -106,6 +106,7 @@ export class CoachService {
 				endDateTime: new Date(startDate.getTime() + 60 * 60 * 1000), // Default 1 hour duration
 				status: SessionStatus.PENDING,
 				isPrivate: schedule.isPrivate || false,
+				studentId: schedule.studentId,
 				details: {
 					mainInterest: schedule.mainInterest,
 					goal: schedule.goal,
@@ -143,6 +144,7 @@ export class CoachService {
 						endDateTime: new Date(currentDate.getTime() + 60 * 60 * 1000), // Default 1 hour
 						status: SessionStatus.PENDING,
 						isPrivate: schedule.isPrivate || false,
+						studentId: schedule.studentId,
 						details: {
 							mainInterest: schedule.mainInterest,
 							goal: schedule.goal,
@@ -286,7 +288,9 @@ export class CoachService {
 			query.coachId = coachId;
 		}
 
-		const sessions = await Session.find(query).sort({ startDateTime: 1 });
+		const sessions = await Session.find(query)
+			.sort({ startDateTime: 1 })
+			.populate("studentId", "name");
 
 		const coachIds = [...new Set(sessions.map((s) => s.coachId))];
 		const coaches = await User.find({ _id: { $in: coachIds } }, { name: 1 });
@@ -303,6 +307,10 @@ export class CoachService {
 					repetition: (s.repetition as any) || "none",
 					templateId: s.templateId,
 					isPrivate: s.isPrivate,
+					studentId: (s.studentId as any)?._id || s.studentId, // Return studentId
+					studentName: (s.studentId as any)?.name,
+					// We might want student name too?
+					// Fetching student names in bulk...
 					coach: {
 						id: s.coachId,
 						name: coachNameMap.get(s.coachId) || "Unknown",

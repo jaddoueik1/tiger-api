@@ -5,6 +5,7 @@ export interface IProspect extends Document {
 	phone?: string;
 	interested: "classes" | "private";
 	source: "Instagram" | "Website" | "Friend" | "Other";
+	type: "prospect" | "old-client";
 	preferredDate?: Date;
 	preferredTime?: string;
 	followUpDates: Date[];
@@ -35,6 +36,11 @@ const ProspectSchema: Schema = new Schema({
 		type: String,
 		enum: ["Instagram", "Website", "Friend", "Other"],
 		default: "Other",
+	},
+	type: {
+		type: String,
+		enum: ["prospect", "old-client"],
+		default: "prospect",
 	},
 	preferredDate: { type: Date },
 	preferredTime: { type: String },

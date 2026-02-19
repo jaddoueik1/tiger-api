@@ -11,6 +11,7 @@ export interface ISession extends Document {
 	endDateTime: Date;
 	status: SessionStatus;
 	isPrivate: boolean;
+	studentId?: string;
 	details?: {
 		mainInterest?: string;
 		goal?: string;
@@ -41,6 +42,7 @@ const sessionSchema = new Schema<ISession>(
 			index: true,
 		},
 		isPrivate: { type: Boolean, default: false },
+		studentId: { type: Schema.Types.ObjectId, ref: "User" },
 		details: {
 			mainInterest: String,
 			goal: String,

@@ -83,7 +83,7 @@ router.get("/me", authenticateToken, async (req: any, res) => {
 	try {
 		const evaluations = await Evaluation.find({ studentId: req.user.userId })
 
-			.populate("quizId", "title")
+			.populate("quizId", "title questions")
 			.populate("createdBy", "name")
 			.sort({ createdAt: -1 });
 

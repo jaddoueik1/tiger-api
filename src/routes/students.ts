@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import express from "express";
 import { requireAdmin } from "../middleware/requireAdmin"; // Corrected path
-import { User } from "../models";
-import { UserRole } from "../types";
+import { Session, User } from "../models";
+import { SessionStatus, UserRole } from "../types";
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ const router = express.Router();
 router.get("/", requireAdmin, async (req, res) => {
 	try {
 		const students = await User.find({ roles: UserRole.STUDENT }).select(
-			"-passwordHash"
+			"-passwordHash",
 		);
 		res.json({ data: students });
 	} catch (error) {
@@ -42,6 +42,40 @@ router.get("/:id", requireAdmin, async (req, res) => {
 		res.status(500).json({
 			error: "Internal Server Error",
 			message: "Failed to fetch student",
+		});
+	}
+});
+
+// Get student sessions (Private)
+router.get("/:id/sessions", requireAdmin, async (req, res) => {
+	try {
+		const sessions = await Session.find({
+			studentId: req.params.id,
+			status: { $ne: SessionStatus.CANCELLED },
+		}).sort({ startDateTime: 1 });
+
+		// Manually populate coach names since coachId is a string, not a ref
+		const coachIds = [...new Set(sessions.map((s) => s.coachId))];
+		const coaches = await User.find({ _id: { $in: coachIds } }).select("name");
+		const coachMap = new Map(coaches.map((c) => [c._id.toString(), c.name]));
+
+		const mappedSessions = sessions.map((s) => ({
+			_id: s._id,
+			name: s.name,
+			sessionDate: s.startDateTime,
+			repetition: s.repetition || "none",
+			isPrivate: s.isPrivate,
+			studentId: s.studentId,
+			coachId: s.coachId,
+			coachName: coachMap.get(s.coachId) || "Unknown Coach",
+		}));
+
+		res.json({ data: mappedSessions });
+	} catch (error) {
+		console.error("Error fetching student sessions:", error);
+		res.status(500).json({
+			error: "Internal Server Error",
+			message: "Failed to fetch student sessions",
 		});
 	}
 });

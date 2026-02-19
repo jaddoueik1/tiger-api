@@ -41,6 +41,7 @@ export interface IBookedSession {
 	templateId?: string;
 	name?: string;
 	isPrivate?: boolean;
+	studentId?: string;
 	sessionDate: Date;
 	repetition: SessionRepetition;
 	mainInterest?: string;
