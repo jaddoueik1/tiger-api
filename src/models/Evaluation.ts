@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IEvaluation extends Document {
 	studentId: mongoose.Types.ObjectId;
-	classTemplateId: mongoose.Types.ObjectId;
+	evaluationDate: Date;
 	quizId: mongoose.Types.ObjectId;
 	answers: {
 		questionId: mongoose.Types.ObjectId;
@@ -21,11 +21,7 @@ export interface IEvaluation extends Document {
 const evaluationSchema = new Schema<IEvaluation>(
 	{
 		studentId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-		classTemplateId: {
-			type: Schema.Types.ObjectId,
-			ref: "ClassTemplate",
-			required: true,
-		},
+		evaluationDate: { type: Date, default: Date.now },
 		quizId: { type: Schema.Types.ObjectId, ref: "Quiz", required: true },
 		answers: [
 			{
@@ -42,14 +38,14 @@ const evaluationSchema = new Schema<IEvaluation>(
 	},
 	{
 		timestamps: true,
-	}
+	},
 );
 
 evaluationSchema.index({ studentId: 1 });
-evaluationSchema.index({ classTemplateId: 1 });
+
 evaluationSchema.index({ quizId: 1 });
 
 export const Evaluation = mongoose.model<IEvaluation>(
 	"Evaluation",
-	evaluationSchema
+	evaluationSchema,
 );

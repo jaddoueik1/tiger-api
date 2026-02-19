@@ -21,6 +21,12 @@ export interface IUser extends Document {
 	photo?: string;
 	specialties?: string[];
 	bookedSessions?: IBookedSession[];
+	assignedQuizzes?: {
+		quizId: string;
+		status: "pending" | "completed";
+		assignedAt: Date;
+		score?: number;
+	}[];
 	hourlyRate?: number;
 	isActive?: boolean;
 	createdAt: Date;
@@ -149,6 +155,13 @@ const userSchema = new Schema<IUser>(
 			type: [bookedSessionSchema],
 			default: [],
 		},
+		assignedQuizzes: [
+			{
+				quizId: { type: Schema.Types.ObjectId, ref: "Quiz" },
+				assignedAt: { type: Date, default: Date.now },
+				score: { type: Number },
+			},
+		],
 		hourlyRate: { type: Number, min: 0 },
 		isActive: { type: Boolean, default: true },
 		forcePasswordChange: { type: Boolean, default: false },

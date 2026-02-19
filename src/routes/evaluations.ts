@@ -10,15 +10,8 @@ const router = express.Router();
 // POST /api/evaluations
 router.post("/", requireAdmin, async (req: any, res) => {
 	try {
-		const {
-			studentId,
-			classTemplateId,
-			quizId,
-			answers,
-			totalScore,
-			maxScore,
-			notes,
-		} = req.body;
+		const { studentId, quizId, answers, totalScore, maxScore, notes } =
+			req.body;
 
 		// Validate Student
 		const student = await User.findById(studentId);
@@ -32,12 +25,12 @@ router.post("/", requireAdmin, async (req: any, res) => {
 		// Create Evaluation
 		const evaluation = new Evaluation({
 			studentId,
-			classTemplateId,
 			quizId,
 			answers,
 			totalScore,
 			maxScore,
 			notes,
+			evaluationDate: req.body.evaluationDate,
 			createdBy: req.user.userId,
 		});
 
@@ -62,7 +55,7 @@ router.get("/student/:studentId", requireAdmin, async (req, res) => {
 	try {
 		const { studentId } = req.params;
 		const evaluations = await Evaluation.find({ studentId })
-			.populate("classTemplateId", "title")
+
 			.populate("quizId", "title")
 			.populate("createdBy", "name")
 			.sort({ createdAt: -1 });
@@ -89,7 +82,7 @@ router.get("/student/:studentId", requireAdmin, async (req, res) => {
 router.get("/me", authenticateToken, async (req: any, res) => {
 	try {
 		const evaluations = await Evaluation.find({ studentId: req.user.userId })
-			.populate("classTemplateId", "title")
+
 			.populate("quizId", "title")
 			.populate("createdBy", "name")
 			.sort({ createdAt: -1 });
