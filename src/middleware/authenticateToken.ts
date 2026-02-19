@@ -28,6 +28,7 @@ export function authenticateToken(
 
 	jwt.verify(token, JWT_SECRET, (err, user) => {
 		if (err) {
+			console.error("JWT Verification Error:", err.message);
 			return res.sendStatus(403); // Forbidden (invalid token)
 		}
 
